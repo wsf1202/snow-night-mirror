@@ -19,7 +19,7 @@ const app = document.querySelector('#app')
 app.innerHTML = `
   <div class="ambient-snow" id="ambientSnow" aria-hidden="true"></div>
   <main class="page-customize">
-    <a class="nav-back" href="${import.meta.env.BASE_URL}">← 返回体验</a>
+    <a class="nav-back" href="${BASE}">← 返回体验</a>
     <h1 class="customize-brand">定制礼物</h1>
     <p class="customize-sub">写下一句祝福，生成可分享链接。朋友打开后，双手合十再分开，就能看见你的专属礼物。</p>
 
@@ -41,7 +41,7 @@ app.innerHTML = `
 
       <div class="cta-row" style="justify-content:flex-start;margin-top:0.5rem">
         <button type="submit" class="btn btn-primary">生成分享链接</button>
-        <a class="btn btn-ghost" id="previewLink" href="${import.meta.env.BASE_URL}">先去体验</a>
+        <a class="btn btn-ghost" id="previewLink" href="${BASE}">先去体验</a>
       </div>
     </form>
 

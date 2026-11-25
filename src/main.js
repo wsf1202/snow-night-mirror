@@ -13,6 +13,8 @@ import { openCamera } from './camera.js'
 import { GestureCoach, shouldStartCoach } from './coach.js'
 import { preloadPixelAssets } from './pixelAssets.js'
 
+const BASE = import.meta.env.BASE_URL
+
 const WASM =
   'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/wasm'
 const POSE_MODEL =
@@ -31,14 +33,14 @@ app.innerHTML = `
 
     <section class="hero" id="hero">
       <div class="hero-sprites" aria-hidden="true">
-        <img class="hs hs-tree" src="${import.meta.env.BASE_URL}pixel/tree.png?v=49" alt="" />
-        <img class="hs hs-gift" src="${import.meta.env.BASE_URL}pixel/gift.png?v=52" alt="" />
-        <img class="hs hs-bell" src="${import.meta.env.BASE_URL}pixel/bell.png" alt="" />
-        <img class="hs hs-hat" src="${import.meta.env.BASE_URL}pixel/santa-hat.png?v=3" alt="" />
-        <img class="hs hs-antlers" src="${import.meta.env.BASE_URL}pixel/antlers.png?v=2" alt="" />
-        <img class="hs hs-cane" src="${import.meta.env.BASE_URL}pixel/frame/deco-0.png?v=53" alt="" />
-        <img class="hs hs-holly" src="${import.meta.env.BASE_URL}pixel/frame/deco-1.png?v=53" alt="" />
-        <img class="hs hs-pine" src="${import.meta.env.BASE_URL}pixel/frame/deco-7.png?v=53" alt="" />
+        <img class="hs hs-tree" src="${BASE}pixel/tree.png?v=49" alt="" />
+        <img class="hs hs-gift" src="${BASE}pixel/gift.png?v=52" alt="" />
+        <img class="hs hs-bell" src="${BASE}pixel/bell.png" alt="" />
+        <img class="hs hs-hat" src="${BASE}pixel/santa-hat.png?v=3" alt="" />
+        <img class="hs hs-antlers" src="${BASE}pixel/antlers.png?v=2" alt="" />
+        <img class="hs hs-cane" src="${BASE}pixel/frame/deco-0.png?v=53" alt="" />
+        <img class="hs hs-holly" src="${BASE}pixel/frame/deco-1.png?v=53" alt="" />
+        <img class="hs hs-pine" src="${BASE}pixel/frame/deco-7.png?v=53" alt="" />
       </div>
       <div class="hero-inner">
         <p class="hero-pixel-tag">PIXEL SNOW NIGHT</p>
@@ -51,7 +53,7 @@ app.innerHTML = `
         </p>
         <div class="cta-row">
           <button type="button" class="btn btn-primary" id="startBtn">开启摄像头</button>
-          <a class="btn btn-ghost" href="${import.meta.env.BASE_URL}customize.html">定制礼物祝福</a>
+          <a class="btn btn-ghost" href="${BASE}customize.html">定制礼物祝福</a>
         </div>
         <p class="privacy-note">画面仅在浏览器本地处理，不会上传。</p>
       </div>
@@ -63,7 +65,7 @@ app.innerHTML = `
         <div class="topbar-actions">
           <button type="button" class="icon-btn" id="muteBtn" aria-pressed="${isMuted()}">${isMuted() ? '已静音' : '音效开'}</button>
           <button type="button" class="icon-btn" id="replayCoachBtn" hidden>再看引导</button>
-          <a class="icon-btn" href="${import.meta.env.BASE_URL}customize.html">定制礼物</a>
+          <a class="icon-btn" href="${BASE}customize.html">定制礼物</a>
         </div>
       </div>
 
@@ -156,7 +158,7 @@ function seedViewportFrame() {
       ]
         .filter(Boolean)
         .join(';')
-      return `<img class="vf-pixel" src="${import.meta.env.BASE_URL}pixel/frame/deco-${p.i}.png?v=53" alt="" style="${pos}" data-i="${idx}" />`
+      return `<img class="vf-pixel" src="${BASE}pixel/frame/deco-${p.i}.png?v=53" alt="" style="${pos}" data-i="${idx}" />`
     })
     .join('')
 }
