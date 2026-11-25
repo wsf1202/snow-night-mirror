@@ -4,8 +4,8 @@ import { fileURLToPath } from 'url'
 
 const root = dirname(fileURLToPath(import.meta.url))
 
-export default defineConfig({
-  base: '/snow-night-mirror/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/snow-night-mirror/' : '/',
   build: {
     rollupOptions: {
       input: {
@@ -20,4 +20,4 @@ export default defineConfig({
     // Allow Cloudflare / localtunnel preview hosts
     allowedHosts: true,
   },
-})
+}))

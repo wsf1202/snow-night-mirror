@@ -2,6 +2,8 @@
 
 浏览器圣诞摄像头互动：像素风手势特效 + 可定制礼物祝福链接。
 
+**在线访问：** https://wsf1202.github.io/snow-night-mirror/
+
 **定稿分支：** `cursor/christmas-camera-hci-1f8e`  
 
 **完整复刻规格（必读）：** [`docs/RECREATE.md`](./docs/RECREATE.md)  
