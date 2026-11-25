@@ -5,23 +5,24 @@ import { loadImage } from './pixelAssets.js'
 
 const BASE = import.meta.env.BASE_URL
 const N = `${BASE}neon`
+const VER = '3'
 
 export const NEON = {
-  guideSnow: `${N}/guide-snow.jpg?v=3`,
-  guideGift: `${N}/guide-gift.jpg?v=3`,
-  guideBell: `${N}/guide-bell.jpg?v=3`,
-  guideAntlers: `${N}/guide-antlers.jpg?v=3`,
-  guideHat: `${N}/guide-hat.jpg?v=3`,
-  guideNext: `${N}/guide-next.jpg?v=3`,
-  guideTree: `${N}/guide-tree.jpg?v=3`,
-  santaHat: `${N}/santa-hat.png?v=3`,
-  antlers: `${N}/antlers.png?v=3`,
-  gift: `${N}/gift.png?v=3`,
-  giftBox: `${N}/gift-box.png?v=3`,
-  giftLid: `${N}/gift-lid.png?v=3`,
-  bell: `${N}/bell.png?v=3`,
-  tree: `${N}/tree.png?v=3`,
-  heroNeon: `${N}/hero-neon.jpg?v=3`,
+  guideSnow: `${N}/guide-snow.jpg?v=${VER}`,
+  guideGift: `${N}/guide-gift.jpg?v=${VER}`,
+  guideBell: `${N}/guide-bell.jpg?v=${VER}`,
+  guideAntlers: `${N}/guide-antlers.jpg?v=${VER}`,
+  guideHat: `${N}/guide-hat.jpg?v=${VER}`,
+  guideNext: `${N}/guide-next.jpg?v=${VER}`,
+  guideTree: `${N}/guide-tree.jpg?v=${VER}`,
+  santaHat: `${N}/santa-hat.png?v=${VER}`,
+  antlers: `${N}/antlers.png?v=${VER}`,
+  gift: `${N}/gift.png?v=${VER}`,
+  giftBox: `${N}/gift-box.png?v=${VER}`,
+  giftLid: `${N}/gift-lid.png?v=${VER}`,
+  bell: `${N}/bell.png?v=${VER}`,
+  tree: `${N}/tree.png?v=${VER}`,
+  heroNeon: `${N}/hero-neon.jpg?v=${VER}`,
 }
 
 export async function preloadNeonAssets() {
