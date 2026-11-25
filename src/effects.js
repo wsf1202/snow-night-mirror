@@ -154,14 +154,17 @@ export class EffectsEngine {
     const h = this.h || 600
     const x0 = near ? near.x * w : rand(0, w)
     const y0 = near ? near.y * h : full ? rand(0, h) : rand(-40, 0)
+    // Neon: slightly softer base alpha; ≤8% get a flash pulse in draw
+    const neon = artStyleId === 'neon'
     return {
       x: near ? x0 + rand(-50, 50) : x0,
       y: near && !full ? y0 + rand(-30, 20) : y0,
-      r: rand(1.2, 3.6),
+      r: neon ? rand(1.0, 2.8) : rand(1.2, 3.6),
       vy: rand(0.45, 1.7),
       vx: rand(-0.35, 0.35),
-      a: rand(0.4, 0.95),
+      a: neon ? rand(0.28, 0.62) : rand(0.4, 0.95),
       wobble: rand(0, Math.PI * 2),
+      flash: neon && Math.random() < 0.08,
       sticky,
       born: performance.now(),
     }
@@ -666,13 +669,21 @@ export class EffectsEngine {
         ? [this.sprites.snowflake]
         : null
     if (artStyleId === 'neon' && flakes?.length) {
+      const t = now * 0.001
       for (const f of this.snow) {
         const img = flakes[Math.abs(Math.floor(f.wobble * 10)) % flakes.length]
-        const s = Math.max(10, Math.round(f.r * 7.5))
+        // Slightly smaller than first neon v2 (was r*7.5, min 10)
+        const s = Math.max(5, Math.round(f.r * 4.2))
+        let alpha = f.a
+        if (f.flash) {
+          // Brief neon blink — only the ≤8% flash cohort
+          const pulse = 0.45 + 0.55 * Math.abs(Math.sin(t * 5.5 + f.wobble * 3))
+          alpha = Math.min(0.92, f.a * (0.75 + pulse * 0.85))
+        }
         drawSprite(ctx, img, f.x, f.y, s, s, {
           anchorX: 0.5,
           anchorY: 0.5,
-          alpha: f.a,
+          alpha,
         })
       }
     } else {

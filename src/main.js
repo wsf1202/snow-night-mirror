@@ -608,14 +608,29 @@ function seedAmbientSnow() {
       `${BASE}neon/snowflake-b.png?v=4`,
       `${BASE}neon/snowflake-c.png?v=4`,
     ]
-    for (let i = 0; i < 22; i++) {
+    const n = 22
+    const flashBudget = Math.max(1, Math.floor(n * 0.08)) // ≤8%
+    const flashIdx = new Set()
+    while (flashIdx.size < flashBudget) flashIdx.add(Math.floor(Math.random() * n))
+    for (let i = 0; i < n; i++) {
       const s = document.createElement('span')
-      s.className = 'neon-flake'
-      const size = 10 + Math.random() * 18
+      const flash = flashIdx.has(i)
+      s.className = flash ? 'neon-flake neon-flake-flash' : 'neon-flake'
+      const size = 5 + Math.random() * 8 // smaller than first v2 (10–28)
+      const fallDur = 9 + Math.random() * 14
+      const fallDelay = -Math.random() * 12
       s.style.left = `${Math.random() * 100}%`
-      s.style.animationDuration = `${9 + Math.random() * 14}s`
-      s.style.animationDelay = `${-Math.random() * 12}s`
-      s.style.opacity = String(0.35 + Math.random() * 0.55)
+      if (flash) {
+        s.style.animationName = 'fall, neonFlakeFlash'
+        s.style.animationDuration = `${fallDur}s, 1.6s`
+        s.style.animationTimingFunction = 'linear, ease-in-out'
+        s.style.animationIterationCount = 'infinite, infinite'
+        s.style.animationDelay = `${fallDelay}s, ${-Math.random() * 1.6}s`
+      } else {
+        s.style.animationDuration = `${fallDur}s`
+        s.style.animationDelay = `${fallDelay}s`
+        s.style.opacity = String(0.22 + Math.random() * 0.28)
+      }
       s.style.width = s.style.height = `${size}px`
       s.style.backgroundImage = `url("${flakes[i % flakes.length]}")`
       root.appendChild(s)
