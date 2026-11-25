@@ -204,7 +204,7 @@ export class EffectsEngine {
     const closedH = size * 1.2
     const boxBottom = closedH * 0.18
     const bodyH = closedH * 0.58
-    const lidLift = size * 0.82
+    const lidLift = size * (artStyleId === 'paper' ? 0.95 : 0.82)
     // Must match _drawGift gapY when progress === 1
     const gapY = boxBottom - bodyH - lidLift * 0.35
     return {
@@ -949,7 +949,8 @@ export class EffectsEngine {
     ctx.scale(scale, scale)
     ctx.imageSmoothingEnabled = artStyleId === 'vintage' || artStyleId === 'paper'
 
-    // Lid intentionally wider than body so open/closed read as two pieces
+    // Dual-path open: closed sprite when shut; else SEPARATE box + lid sprites
+    // (lid lifts/rotates off — never a single sprite with a horizontal line cut).
     const closed = this.sprites.gift
     const body = this.sprites.giftBox
     const lid = this.sprites.giftLid
@@ -958,9 +959,13 @@ export class EffectsEngine {
     const lidW = size * 1.06
     const boxBottom = closedH * 0.18
     const bodyH = closedH * 0.58
-    const lidH = closedH * 0.52
-    const lidLift = progress * size * 0.82
-    const lidRot = -progress * 0.42
+    // Prefer natural lid aspect so a shallow lid sprite doesn't stretch into a box half
+    const lidAspect =
+      lid && lid.naturalWidth ? lid.naturalHeight / lid.naturalWidth : 0.52
+    const lidH = Math.min(closedH * 0.62, lidW * Math.max(0.32, Math.min(0.72, lidAspect)))
+    const lidLift = progress * size * (artStyleId === 'paper' ? 0.95 : 0.82)
+    const lidRot = -progress * (artStyleId === 'paper' ? 0.5 : 0.42)
+    const lidSlideX = artStyleId === 'paper' ? progress * size * 0.12 : 0
 
     if (progress < 0.02 && closed) {
       drawSprite(ctx, closed, 0, boxBottom, size, closedH, {
@@ -1024,9 +1029,9 @@ export class EffectsEngine {
         ctx.globalAlpha = fade
       }
 
-      // Lid wider + lifted — clear split from the box
+      // Lid wider + lifted off the box as its own sprite
       ctx.save()
-      ctx.translate(0, boxBottom - bodyH * 0.88 - lidLift)
+      ctx.translate(lidSlideX, boxBottom - bodyH * 0.88 - lidLift)
       ctx.rotate(lidRot)
       if (lid) {
         drawSprite(ctx, lid, 0, 0, lidW, lidH, {
