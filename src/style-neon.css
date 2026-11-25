@@ -52,6 +52,18 @@
   height: 3px;
 }
 
+.art-neon .ambient-snow span.neon-flake {
+  border-radius: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  box-shadow: none;
+  filter:
+    drop-shadow(0 0 4px rgba(0, 240, 255, 0.65))
+    drop-shadow(0 0 8px rgba(255, 43, 214, 0.35));
+}
+
 .art-neon .hero {
   background:
     linear-gradient(

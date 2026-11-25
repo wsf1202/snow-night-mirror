@@ -6,6 +6,7 @@ import { loadImage } from './pixelAssets.js'
 const BASE = import.meta.env.BASE_URL
 const N = `${BASE}neon`
 const VER = '3'
+const FLAKE_VER = '4'
 
 export const NEON = {
   guideSnow: `${N}/guide-snow.jpg?v=${VER}`,
@@ -22,6 +23,9 @@ export const NEON = {
   giftLid: `${N}/gift-lid.png?v=${VER}`,
   bell: `${N}/bell.png?v=${VER}`,
   tree: `${N}/tree.png?v=${VER}`,
+  snowflake: `${N}/snowflake.png?v=${FLAKE_VER}`,
+  snowflakeB: `${N}/snowflake-b.png?v=${FLAKE_VER}`,
+  snowflakeC: `${N}/snowflake-c.png?v=${FLAKE_VER}`,
   heroNeon: `${N}/hero-neon.jpg?v=${VER}`,
 }
 

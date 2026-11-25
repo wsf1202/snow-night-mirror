@@ -601,6 +601,27 @@ function escapeHtml(s) {
 
 function seedAmbientSnow() {
   const root = document.getElementById('ambientSnow')
+  if (!root) return
+  if (art.id === 'neon') {
+    const flakes = [
+      `${BASE}neon/snowflake.png?v=4`,
+      `${BASE}neon/snowflake-b.png?v=4`,
+      `${BASE}neon/snowflake-c.png?v=4`,
+    ]
+    for (let i = 0; i < 22; i++) {
+      const s = document.createElement('span')
+      s.className = 'neon-flake'
+      const size = 10 + Math.random() * 18
+      s.style.left = `${Math.random() * 100}%`
+      s.style.animationDuration = `${9 + Math.random() * 14}s`
+      s.style.animationDelay = `${-Math.random() * 12}s`
+      s.style.opacity = String(0.35 + Math.random() * 0.55)
+      s.style.width = s.style.height = `${size}px`
+      s.style.backgroundImage = `url("${flakes[i % flakes.length]}")`
+      root.appendChild(s)
+    }
+    return
+  }
   for (let i = 0; i < 28; i++) {
     const s = document.createElement('span')
     s.style.left = `${Math.random() * 100}%`

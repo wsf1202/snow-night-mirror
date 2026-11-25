@@ -87,6 +87,8 @@ export class EffectsEngine {
       giftLid: null,
       bell: null,
       tree: null,
+      snowflake: null,
+      snowflakes: [],
     }
     /** Separate timers — only after their own gestures */
     this.hatUntil = 0
@@ -104,6 +106,11 @@ export class EffectsEngine {
     this.sprites.giftLid = await loadImage(ART.giftLid, { scrubMagenta: scrub })
     this.sprites.bell = await loadImage(ART.bell)
     this.sprites.tree = await loadImage(ART.tree, { scrubMagenta: scrub })
+    this.sprites.snowflake = ART.snowflake ? await loadImage(ART.snowflake) : null
+    const flakeSrcs = [ART.snowflake, ART.snowflakeB, ART.snowflakeC].filter(Boolean)
+    this.sprites.snowflakes = (
+      await Promise.all(flakeSrcs.map((src) => loadImage(src)))
+    ).filter(Boolean)
   }
 
   /** Reload sprites after art pack swap (before stage starts). */
@@ -652,11 +659,28 @@ export class EffectsEngine {
     if (this.fireplace) this._drawFireplace(ctx, this.fireplace, now)
     if (this.tree) this._drawTree(ctx, this.tree)
 
-    // pixel snow (square flakes)
-    for (const f of this.snow) {
-      const s = Math.max(2, Math.round(f.r * 1.6))
-      ctx.fillStyle = `rgba(255,255,255,${f.a})`
-      ctx.fillRect(Math.round(f.x), Math.round(f.y), s, s)
+    // Snow: neon uses glow snowflake sprites; other styles keep square flakes
+    const flakes = this.sprites.snowflakes?.length
+      ? this.sprites.snowflakes
+      : this.sprites.snowflake
+        ? [this.sprites.snowflake]
+        : null
+    if (artStyleId === 'neon' && flakes?.length) {
+      for (const f of this.snow) {
+        const img = flakes[Math.abs(Math.floor(f.wobble * 10)) % flakes.length]
+        const s = Math.max(10, Math.round(f.r * 7.5))
+        drawSprite(ctx, img, f.x, f.y, s, s, {
+          anchorX: 0.5,
+          anchorY: 0.5,
+          alpha: f.a,
+        })
+      }
+    } else {
+      for (const f of this.snow) {
+        const s = Math.max(2, Math.round(f.r * 1.6))
+        ctx.fillStyle = `rgba(255,255,255,${f.a})`
+        ctx.fillRect(Math.round(f.x), Math.round(f.y), s, s)
+      }
     }
 
     if (this.gift && this.gift.phase !== 'done') this._drawGift(ctx)
