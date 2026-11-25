@@ -718,13 +718,23 @@ export class EffectsEngine {
     const crownX = (face.x ?? face.crownX) * this.w
     const crownY =
       (face.crownY ?? face.y - face.earSpan * 1.05) * this.h - span * 0.28
-    // Moderate size (between original and oversized)
-    const hatW = clamp(span * 1.95, 78, 168)
+    // Landmark scale: paper/vintage read larger on-head than pixel sprites
+    const paperLike = artStyleId === 'paper' || artStyleId === 'vintage'
+    const hatW = clamp(span * (paperLike ? 2.45 : 1.95), paperLike ? 96 : 78, paperLike ? 220 : 168)
     const hatH = hatW * 0.82
-    const antW = clamp(span * 2.2, 88, 180)
-    const antH = antW * 0.5
-    if (showAntlers && this.sprites.antlers) {
-      drawSprite(ctx, this.sprites.antlers, crownX, crownY - span * 0.2, antW, antH, {
+    // Paper antlers: wide wing-span vs earSpan; keep natural aspect (never squash 0.5×)
+    const antW = clamp(span * (artStyleId === 'paper' ? 3.55 : paperLike ? 3.1 : 2.2), artStyleId === 'paper' ? 140 : 88, artStyleId === 'paper' ? 360 : paperLike ? 280 : 180)
+    const antImg = this.sprites.antlers
+    const antAspect =
+      antImg && antImg.naturalWidth
+        ? antImg.naturalHeight / antImg.naturalWidth
+        : artStyleId === 'paper'
+          ? 0.82
+          : 0.5
+    const antH = antW * (artStyleId === 'paper' ? Math.max(0.72, antAspect) : antAspect > 0.2 ? antAspect : 0.5)
+    const antLift = span * (artStyleId === 'paper' ? 0.08 : 0.2)
+    if (showAntlers && antImg) {
+      drawSprite(ctx, antImg, crownX, crownY - antLift, antW, antH, {
         anchorX: 0.5,
         anchorY: 1,
         alpha: 0.96,
