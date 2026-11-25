@@ -5,7 +5,7 @@ import { loadImage } from './pixelAssets.js'
 
 const BASE = import.meta.env.BASE_URL
 const P = `${BASE}paper`
-const VER = '7'
+const VER = '8'
 
 export const PAPER = {
   guideSnow: `${P}/guide-snow.jpg?v=${VER}`,

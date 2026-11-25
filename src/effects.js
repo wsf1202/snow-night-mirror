@@ -204,9 +204,9 @@ export class EffectsEngine {
     const closedH = size * 1.2
     const boxBottom = closedH * 0.18
     const bodyH = closedH * 0.58
-    const lidLift = size * (artStyleId === 'paper' ? 0.95 : 0.82)
+    const lidLift = size * (artStyleId === 'paper' ? 1.2 : 0.82)
     // Must match _drawGift gapY when progress === 1
-    const gapY = boxBottom - bodyH - lidLift * 0.35
+    const gapY = boxBottom - bodyH - lidLift * (artStyleId === 'paper' ? 0.45 : 0.35)
     return {
       x: this.w * 0.5,
       y: this.h * 0.5 - gapY,
@@ -949,25 +949,37 @@ export class EffectsEngine {
     ctx.scale(scale, scale)
     ctx.imageSmoothingEnabled = artStyleId === 'vintage' || artStyleId === 'paper'
 
-    // Dual-path open: closed sprite when shut; else SEPARATE box + lid sprites
-    // (lid lifts/rotates off — never a single sprite with a horizontal line cut).
+    // Dual-path open: SEPARATE box + lid sprites. Lid physically lifts off.
+    // Paper: always body+lid (even when closed) so orientation never jumps
+    // from a different closed sprite to mismatched open pieces.
     const closed = this.sprites.gift
     const body = this.sprites.giftBox
     const lid = this.sprites.giftLid
+    const paper = artStyleId === 'paper'
     const closedH = size * 1.2
-    const bodyW = size * 0.86
-    const lidW = size * 1.06
     const boxBottom = closedH * 0.18
-    const bodyH = closedH * 0.58
-    // Prefer natural lid aspect so a shallow lid sprite doesn't stretch into a box half
+
+    const bodyAspect =
+      body && body.naturalWidth ? body.naturalHeight / body.naturalWidth : 0.58
     const lidAspect =
       lid && lid.naturalWidth ? lid.naturalHeight / lid.naturalWidth : 0.52
-    const lidH = Math.min(closedH * 0.62, lidW * Math.max(0.32, Math.min(0.72, lidAspect)))
-    const lidLift = progress * size * (artStyleId === 'paper' ? 0.95 : 0.82)
-    const lidRot = -progress * (artStyleId === 'paper' ? 0.5 : 0.42)
-    const lidSlideX = artStyleId === 'paper' ? progress * size * 0.12 : 0
+    const bodyW = size * (paper ? 0.92 : 0.86)
+    const bodyH = paper
+      ? bodyW * Math.max(0.38, Math.min(0.72, bodyAspect))
+      : closedH * 0.58
+    const lidW = size * (paper ? 1.02 : 1.06)
+    const lidH = paper
+      ? lidW * Math.max(0.4, Math.min(0.75, lidAspect))
+      : closedH * 0.52
 
-    if (progress < 0.02 && closed) {
+    // Strong vertical lift so the gap reads as a real lid leaving the box
+    const lidLift = progress * size * (paper ? 1.2 : 0.82)
+    const lidRot = -progress * (paper ? 0.28 : 0.42)
+    const lidSlideX = paper ? progress * size * 0.06 : 0
+
+    // Paper always dual-sprite; other styles keep closed sprite until open starts
+    const useClosedSprite = !paper && progress < 0.02 && closed
+    if (useClosedSprite) {
       drawSprite(ctx, closed, 0, boxBottom, size, closedH, {
         anchorX: 0.5,
         anchorY: 1,
@@ -982,16 +994,14 @@ export class EffectsEngine {
         this._paintFrontGiftBody(ctx, 0, boxBottom - bodyH, bodyW, bodyH, g.style, true)
       }
 
-      // Blessing between lid and box — no fill / tissue inside
-      // Text is un-mirrored below (scale -1) so selfie mirror stays readable.
+      // Blessing in the gap between lid and box
       if (progress > 0.18) {
         const alpha = Math.min(1, (progress - 0.18) / 0.35) * (ctx.globalAlpha || 1)
         ctx.globalAlpha = alpha
         const bw = Math.min(280, this.w * 0.65)
         const bh = g.signature ? 78 : 56
-        const gapY = boxBottom - bodyH - lidLift * 0.35
-        const lightCard = artStyleId === 'vintage' || artStyleId === 'paper'
-        const paper = artStyleId === 'paper'
+        const gapY = boxBottom - bodyH - lidLift * 0.45
+        const lightCard = artStyleId === 'vintage' || paper
         ctx.fillStyle = lightCard
           ? paper
             ? 'rgba(245, 239, 228, 0.97)'
@@ -1029,14 +1039,15 @@ export class EffectsEngine {
         ctx.globalAlpha = fade
       }
 
-      // Lid wider + lifted off the box as its own sprite
+      // Lid rests on body top (anchorY=1); lifts straight up as progress rises
+      const lidRestY = boxBottom - bodyH + (paper ? bodyH * 0.02 : bodyH * 0.12)
       ctx.save()
-      ctx.translate(lidSlideX, boxBottom - bodyH * 0.88 - lidLift)
+      ctx.translate(lidSlideX, lidRestY - lidLift)
       ctx.rotate(lidRot)
       if (lid) {
         drawSprite(ctx, lid, 0, 0, lidW, lidH, {
           anchorX: 0.5,
-          anchorY: 0.92,
+          anchorY: paper ? 1 : 0.92,
         })
       } else {
         this._paintFrontGiftLid(ctx, 0, 0, lidW, lidH * 0.55, g.style)
