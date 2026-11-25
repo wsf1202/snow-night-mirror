@@ -21,6 +21,7 @@ import {
   persistArtStyle,
   styleHomeHref,
   withStyleParam,
+  soloStyleId,
 } from './artStyle.js'
 
 const BASE = import.meta.env.BASE_URL
@@ -77,15 +78,15 @@ function heroSpritesHtml() {
   }
   if (art.id === 'paper') {
     return `
-        <img class="hs hs-star" src="${BASE}paper/star.png?v=2" alt="" />
-        <img class="hs hs-tree" src="${BASE}paper/tree.png?v=2" alt="" />
-        <img class="hs hs-gift" src="${BASE}paper/gift.png?v=2" alt="" />
-        <img class="hs hs-bell" src="${BASE}paper/bell.png?v=2" alt="" />
-        <img class="hs hs-hat" src="${BASE}paper/santa-hat.png?v=2" alt="" />
-        <img class="hs hs-bow" src="${BASE}paper/bow.png?v=2" alt="" />
-        <img class="hs hs-ornament" src="${BASE}paper/ornament.png?v=2" alt="" />
-        <img class="hs hs-holly" src="${BASE}paper/frame/deco-0.png?v=2" alt="" />
-        <img class="hs hs-pine" src="${BASE}paper/frame/deco-2.png?v=2" alt="" />
+        <img class="hs hs-star" src="${BASE}paper/star.png?v=3" alt="" />
+        <img class="hs hs-tree" src="${BASE}paper/tree.png?v=3" alt="" />
+        <img class="hs hs-gift" src="${BASE}paper/gift.png?v=3" alt="" />
+        <img class="hs hs-bell" src="${BASE}paper/bell.png?v=3" alt="" />
+        <img class="hs hs-hat" src="${BASE}paper/santa-hat.png?v=3" alt="" />
+        <img class="hs hs-bow" src="${BASE}paper/bow.png?v=3" alt="" />
+        <img class="hs hs-ornament" src="${BASE}paper/ornament.png?v=3" alt="" />
+        <img class="hs hs-holly" src="${BASE}paper/frame/deco-0.png?v=3" alt="" />
+        <img class="hs hs-pine" src="${BASE}paper/frame/deco-2.png?v=3" alt="" />
     `
   }
   return `
@@ -123,12 +124,16 @@ app.innerHTML = `
           <button type="button" class="btn btn-primary" id="startBtn">开启摄像头</button>
           <a class="btn btn-ghost" href="${customizeHref}">定制礼物祝福</a>
         </div>
-        <div class="style-picker" role="navigation" aria-label="画风切换">
+        ${
+          soloStyleId()
+            ? ''
+            : `<div class="style-picker" role="navigation" aria-label="画风切换">
           <span class="style-picker-label">画风</span>
           <a class="style-chip" href="${styleHomeHref('pixel', BASE)}" aria-current="${art.id === 'pixel' ? 'page' : 'false'}">像素雪夜</a>
           <a class="style-chip" href="${styleHomeHref('vintage', BASE)}" aria-current="${art.id === 'vintage' ? 'page' : 'false'}">复古明信片</a>
           <a class="style-chip" href="${styleHomeHref('paper', BASE)}" aria-current="${art.id === 'paper' ? 'page' : 'false'}">纸艺立体</a>
-        </div>
+        </div>`
+        }
         <p class="privacy-note">画面仅在浏览器本地处理，不会上传。</p>
       </div>
     </section>
@@ -231,7 +236,7 @@ function seedViewportFrame() {
       ]
         .filter(Boolean)
         .join(';')
-      const decoVer = art.id === 'pixel' ? '53' : art.id === 'paper' ? '2' : '1'
+      const decoVer = art.id === 'pixel' ? '53' : art.id === 'paper' ? '3' : '1'
       return `<img class="vf-pixel" src="${BASE}${assetRoot}/frame/deco-${p.i}.png?v=${decoVer}" alt="" style="${pos}" data-i="${idx}" />`
     })
     .join('')

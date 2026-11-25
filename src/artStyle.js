@@ -1,6 +1,9 @@
 /**
  * Art style resolver — theme (Christmas) × art style (pixel | vintage | paper).
  * Default remains pixel so the kept build is unchanged.
+ *
+ * Solo demos: set VITE_SOLO_STYLE=paper (etc.) so bare `/` is that style only
+ * and multi-style chips stay hidden. Separate host/URL per style.
  */
 
 export const ART_STYLES = {
@@ -53,15 +56,26 @@ function normalizeStyleId(raw) {
   return 'pixel'
 }
 
+/** Forced single-style demo host (separate URL per style). */
+export function soloStyleId() {
+  const raw = (import.meta.env.VITE_SOLO_STYLE || '').toLowerCase()
+  if (!raw) return null
+  const id = normalizeStyleId(raw)
+  return KNOWN.has(id) ? id : null
+}
+
 export function resolveArtStyle(search = window.location.search) {
+  const solo = soloStyleId()
+  if (solo) return ART_STYLES[solo]
   const params = new URLSearchParams(search)
   const fromUrl = (params.get('style') || params.get('art') || '').toLowerCase()
-  // URL is source of truth — bare `/` stays pixel (kept build).
+  // URL is source of truth — bare `/` stays pixel (kept build) unless solo.
   return ART_STYLES[normalizeStyleId(fromUrl)]
 }
 
 export function persistArtStyle(styleId) {
-  const id = normalizeStyleId(styleId)
+  const solo = soloStyleId()
+  const id = solo || normalizeStyleId(styleId)
   try {
     localStorage.setItem(STORAGE_KEY, id)
   } catch {
@@ -72,7 +86,8 @@ export function persistArtStyle(styleId) {
 
 /** Append or replace style= in a URL / search string while keeping gift params. */
 export function withStyleParam(urlOrSearch, styleId) {
-  const id = normalizeStyleId(styleId)
+  const solo = soloStyleId()
+  const id = solo || normalizeStyleId(styleId)
   let url
   try {
     url = new URL(urlOrSearch, window.location.origin)
@@ -80,18 +95,21 @@ export function withStyleParam(urlOrSearch, styleId) {
     const params = new URLSearchParams(
       String(urlOrSearch).startsWith('?') ? urlOrSearch.slice(1) : urlOrSearch,
     )
-    if (id === 'pixel') params.delete('style')
+    // Solo hosts: no style query — this host IS the style.
+    if (solo || id === 'pixel') params.delete('style')
     else params.set('style', id)
     const q = params.toString()
     return q ? `?${q}` : '?'
   }
-  if (id === 'pixel') url.searchParams.delete('style')
+  if (solo || id === 'pixel') url.searchParams.delete('style')
   else url.searchParams.set('style', id)
   return `${url.pathname}${url.search}${url.hash}`
 }
 
 export function styleHomeHref(styleId, base = import.meta.env.BASE_URL) {
   const root = base.endsWith('/') ? base : `${base}/`
+  const solo = soloStyleId()
+  if (solo) return root
   const id = normalizeStyleId(styleId)
   if (id === 'pixel') return root
   return `${root}?style=${id}`
