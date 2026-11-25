@@ -189,8 +189,8 @@ function seedAmbientSnow() {
       img.style.left = `${Math.random() * 100}%`
       img.style.animationDuration = `${10 + Math.random() * 16}s`
       img.style.animationDelay = `${-Math.random() * 14}s`
-      img.style.opacity = String(0.35 + Math.random() * 0.45)
-      const size = `${12 + Math.random() * 20}px`
+      img.style.opacity = String(0.18 + Math.random() * 0.28)
+      const size = `${7 + Math.random() * 11}px`
       img.style.width = size
       img.style.height = size
       root.appendChild(img)

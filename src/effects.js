@@ -660,13 +660,16 @@ export class EffectsEngine {
     if (this.fireplace) this._drawFireplace(ctx, this.fireplace, now)
     if (this.tree) this._drawTree(ctx, this.tree)
 
-    // Pixel: square flakes. Paper (etc.): GenerateImage snowflake sprites.
+    // Pixel: square flakes. Paper/vintage: GenerateImage snowflake sprites.
     const flakes = this.sprites.snowflakes
     const useSpriteSnow = artStyleId !== 'pixel' && flakes?.length
+    const paperSnow = artStyleId === 'paper'
     for (const f of this.snow) {
       if (useSpriteSnow) {
         const img = flakes[f.flake % flakes.length]
-        const s = Math.max(10, f.r * (f.sticky ? 7.5 : 5.5))
+        // Paper: smaller + softer than vintage sprite snow
+        const mul = paperSnow ? (f.sticky ? 3.0 : 2.2) : f.sticky ? 7.5 : 5.5
+        const s = Math.max(paperSnow ? 5 : 10, f.r * mul)
         const rot = f.wobble + (performance.now() / 1000) * f.spin
         ctx.save()
         ctx.translate(f.x, f.y)
@@ -674,7 +677,7 @@ export class EffectsEngine {
         drawSprite(ctx, img, 0, 0, s, s, {
           anchorX: 0.5,
           anchorY: 0.5,
-          alpha: f.a,
+          alpha: f.a * (paperSnow ? 0.58 : 1),
         })
         ctx.restore()
       } else {
