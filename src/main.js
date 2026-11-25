@@ -603,14 +603,39 @@ function escapeHtml(s) {
 
 function seedAmbientSnow() {
   const root = document.getElementById('ambientSnow')
-  for (let i = 0; i < 28; i++) {
-    const s = document.createElement('span')
-    s.style.left = `${Math.random() * 100}%`
-    s.style.animationDuration = `${8 + Math.random() * 14}s`
-    s.style.animationDelay = `${-Math.random() * 12}s`
-    s.style.opacity = String(0.25 + Math.random() * 0.45)
-    s.style.width = s.style.height = `${2 + Math.random() * 4}px`
-    root.appendChild(s)
+  if (!root) return
+  const paperFlakes =
+    art.id === 'paper'
+      ? [
+          `${BASE}paper/snowflake.png?v=4`,
+          `${BASE}paper/snowflake-b.png?v=4`,
+          `${BASE}paper/snowflake-c.png?v=4`,
+        ]
+      : null
+  const count = paperFlakes ? 18 : 28
+  for (let i = 0; i < count; i++) {
+    if (paperFlakes) {
+      const img = document.createElement('img')
+      img.className = 'ambient-flake'
+      img.src = paperFlakes[i % paperFlakes.length]
+      img.alt = ''
+      img.style.left = `${Math.random() * 100}%`
+      img.style.animationDuration = `${10 + Math.random() * 16}s`
+      img.style.animationDelay = `${-Math.random() * 14}s`
+      img.style.opacity = String(0.35 + Math.random() * 0.45)
+      const size = `${14 + Math.random() * 22}px`
+      img.style.width = size
+      img.style.height = size
+      root.appendChild(img)
+    } else {
+      const s = document.createElement('span')
+      s.style.left = `${Math.random() * 100}%`
+      s.style.animationDuration = `${8 + Math.random() * 14}s`
+      s.style.animationDelay = `${-Math.random() * 12}s`
+      s.style.opacity = String(0.25 + Math.random() * 0.45)
+      s.style.width = s.style.height = `${2 + Math.random() * 4}px`
+      root.appendChild(s)
+    }
   }
 }
 

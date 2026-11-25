@@ -86,6 +86,8 @@ export class EffectsEngine {
       giftLid: null,
       bell: null,
       tree: null,
+      snowflake: null,
+      snowflakes: [],
     }
     /** Separate timers — only after their own gestures */
     this.hatUntil = 0
@@ -103,6 +105,11 @@ export class EffectsEngine {
     this.sprites.giftLid = await loadImage(ART.giftLid, { scrubMagenta: scrub })
     this.sprites.bell = await loadImage(ART.bell)
     this.sprites.tree = await loadImage(ART.tree, { scrubMagenta: scrub })
+    // Paper (and packs that ship flakes) use sprite snow; pixel keeps squares.
+    const flakeSrcs = [ART.snowflake, ART.snowflakeB, ART.snowflakeC].filter(Boolean)
+    const flakes = await Promise.all(flakeSrcs.map((src) => loadImage(src)))
+    this.sprites.snowflakes = flakes.filter(Boolean)
+    this.sprites.snowflake = this.sprites.snowflakes[0] || null
   }
 
   /** Reload sprites after art pack swap (before stage starts). */
@@ -154,6 +161,8 @@ export class EffectsEngine {
       vx: rand(-0.35, 0.35),
       a: rand(0.4, 0.95),
       wobble: rand(0, Math.PI * 2),
+      spin: rand(-0.6, 0.6),
+      flake: Math.floor(rand(0, 3)),
       sticky,
       born: performance.now(),
     }
@@ -651,11 +660,28 @@ export class EffectsEngine {
     if (this.fireplace) this._drawFireplace(ctx, this.fireplace, now)
     if (this.tree) this._drawTree(ctx, this.tree)
 
-    // pixel snow (square flakes)
+    // Pixel: square flakes. Paper (etc.): GenerateImage snowflake sprites.
+    const flakes = this.sprites.snowflakes
+    const useSpriteSnow = artStyleId !== 'pixel' && flakes?.length
     for (const f of this.snow) {
-      const s = Math.max(2, Math.round(f.r * 1.6))
-      ctx.fillStyle = `rgba(255,255,255,${f.a})`
-      ctx.fillRect(Math.round(f.x), Math.round(f.y), s, s)
+      if (useSpriteSnow) {
+        const img = flakes[f.flake % flakes.length]
+        const s = Math.max(10, f.r * (f.sticky ? 7.5 : 5.5))
+        const rot = f.wobble + (performance.now() / 1000) * f.spin
+        ctx.save()
+        ctx.translate(f.x, f.y)
+        ctx.rotate(rot)
+        drawSprite(ctx, img, 0, 0, s, s, {
+          anchorX: 0.5,
+          anchorY: 0.5,
+          alpha: f.a,
+        })
+        ctx.restore()
+      } else {
+        const s = Math.max(2, Math.round(f.r * 1.6))
+        ctx.fillStyle = `rgba(255,255,255,${f.a})`
+        ctx.fillRect(Math.round(f.x), Math.round(f.y), s, s)
+      }
     }
 
     if (this.gift && this.gift.phase !== 'done') this._drawGift(ctx)
