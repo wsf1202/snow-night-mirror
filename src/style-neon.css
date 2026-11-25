@@ -41,6 +41,12 @@
     linear-gradient(165deg, #050a18 0%, #0a1630 48%, #061022 100%);
 }
 
+/* Sit above .hero (z-index:1) so opaque neon hero bg does not hide flakes */
+.art-neon .ambient-snow {
+  z-index: 2;
+  pointer-events: none;
+}
+
 .art-neon .ambient-snow span {
   border-radius: 50%;
   background: var(--neon-cyan);
