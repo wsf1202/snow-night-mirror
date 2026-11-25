@@ -1,5 +1,5 @@
 /** 与 web EFFECT_META 对齐的指引元数据（v1 UI） */
-const EFFECT_META = [
+var EFFECT_META = [
   {
     id: 'a1',
     name: '飘雪祝福',
@@ -39,5 +39,5 @@ const EFFECT_META = [
 ]
 
 module.exports = {
-  EFFECT_META,
+  EFFECT_META: EFFECT_META,
 }

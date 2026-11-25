@@ -100,6 +100,19 @@ snow-night-mirror/                 # 仓库根（Web + 小程序）
 
 ---
 
+## 「js压缩失败」
+
+预览/上传时 DevTools 用较老的 Uglify 压 JS。脚手架已去掉空值合并等 ES2020 语法；`es6` + `enhance` 保持开启，`minified` 默认 true。
+
+若仍报错，临时绕过：
+
+1. **详情 → 本地设置 → 取消「上传时压缩 JS 代码」**（等价 `setting.minified: false`）
+2. 社区讨论：https://developers.weixin.qq.com/community/develop/doc/00040e5a0846706e893dcc24256009
+
+上线前建议再打开压缩，确认预览体积表正常后再提审。
+
+---
+
 ## 与 Web 版关系
 
 | Web | 小程序 |

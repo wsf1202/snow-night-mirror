@@ -1,4 +1,6 @@
-const { isVirtualPaymentEnabled, requestVirtualPayment } = require('../../utils/payment')
+var payment = require('../../utils/payment')
+var isVirtualPaymentEnabled = payment.isVirtualPaymentEnabled
+var requestVirtualPayment = payment.requestVirtualPayment
 
 Page({
   data: {
@@ -6,9 +8,9 @@ Page({
     showPayHint: true,
   },
 
-  onLoad() {
-    const snowflakes = []
-    for (let i = 0; i < 18; i++) {
+  onLoad: function () {
+    var snowflakes = []
+    for (var i = 0; i < 18; i++) {
       snowflakes.push({
         id: i,
         left: Math.random() * 100,
@@ -18,18 +20,18 @@ Page({
         size: 4 + Math.random() * 8,
       })
     }
-    this.setData({ snowflakes })
+    this.setData({ snowflakes: snowflakes })
   },
 
-  onStartCamera() {
+  onStartCamera: function () {
     wx.navigateTo({ url: '/pages/stage/stage' })
   },
 
-  onCustomize() {
+  onCustomize: function () {
     wx.navigateTo({ url: '/pages/customize/customize' })
   },
 
-  onTryPay() {
+  onTryPay: function () {
     if (!isVirtualPaymentEnabled()) {
       wx.showModal({
         title: '虚拟支付未开通',
@@ -42,10 +44,10 @@ Page({
     }
 
     requestVirtualPayment('unlockPremiumEffects')
-      .then(() => {
+      .then(function () {
         wx.showToast({ title: '支付成功', icon: 'success' })
       })
-      .catch((err) => {
+      .catch(function (err) {
         wx.showToast({
           title: (err && err.message) || '支付未完成',
           icon: 'none',

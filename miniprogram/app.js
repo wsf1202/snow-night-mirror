@@ -1,4 +1,5 @@
-const { FEATURES } = require('./utils/config')
+var config = require('./utils/config')
+var FEATURES = config.FEATURES
 
 App({
   globalData: {
@@ -6,9 +7,9 @@ App({
     features: FEATURES,
   },
 
-  onLaunch() {
+  onLaunch: function () {
     try {
-      const saved = wx.getStorageSync('snow-night-gift')
+      var saved = wx.getStorageSync('snow-night-gift')
       if (saved) {
         this.globalData.gift = typeof saved === 'string' ? JSON.parse(saved) : saved
       }
