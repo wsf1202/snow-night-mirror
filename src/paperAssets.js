@@ -5,27 +5,28 @@ import { loadImage } from './pixelAssets.js'
 
 const BASE = import.meta.env.BASE_URL
 const P = `${BASE}paper`
+const VER = '3'
 
 export const PAPER = {
-  guideSnow: `${P}/guide-snow.jpg?v=3`,
-  guideGift: `${P}/guide-gift.jpg?v=3`,
-  guideBell: `${P}/guide-bell.jpg?v=3`,
-  guideAntlers: `${P}/guide-antlers.jpg?v=3`,
-  guideHat: `${P}/guide-hat.jpg?v=3`,
-  guideNext: `${P}/guide-next.jpg?v=3`,
-  guideTree: `${P}/guide-tree.jpg?v=3`,
-  santaHat: `${P}/santa-hat.png?v=3`,
-  antlers: `${P}/antlers.png?v=3`,
-  gift: `${P}/gift.png?v=3`,
-  giftBox: `${P}/gift-box.png?v=3`,
-  giftLid: `${P}/gift-lid.png?v=3`,
-  bell: `${P}/bell.png?v=3`,
-  tree: `${P}/tree.png?v=3`,
-  bow: `${P}/bow.png?v=3`,
-  ornament: `${P}/ornament.png?v=3`,
-  star: `${P}/star.png?v=3`,
-  snowflake: `${P}/snowflake.png?v=3`,
-  heroPaper: `${P}/hero-paper.jpg?v=3`,
+  guideSnow: `${P}/guide-snow.jpg?v=${VER}`,
+  guideGift: `${P}/guide-gift.jpg?v=${VER}`,
+  guideBell: `${P}/guide-bell.jpg?v=${VER}`,
+  guideAntlers: `${P}/guide-antlers.jpg?v=${VER}`,
+  guideHat: `${P}/guide-hat.jpg?v=${VER}`,
+  guideNext: `${P}/guide-next.jpg?v=${VER}`,
+  guideTree: `${P}/guide-tree.jpg?v=${VER}`,
+  santaHat: `${P}/santa-hat.png?v=${VER}`,
+  antlers: `${P}/antlers.png?v=${VER}`,
+  gift: `${P}/gift.png?v=${VER}`,
+  giftBox: `${P}/gift-box.png?v=${VER}`,
+  giftLid: `${P}/gift-lid.png?v=${VER}`,
+  bell: `${P}/bell.png?v=${VER}`,
+  tree: `${P}/tree.png?v=${VER}`,
+  bow: `${P}/bow.png?v=${VER}`,
+  ornament: `${P}/ornament.png?v=${VER}`,
+  star: `${P}/star.png?v=${VER}`,
+  snowflake: `${P}/snowflake.png?v=${VER}`,
+  heroPaper: `${P}/hero-paper.jpg?v=${VER}`,
 }
 
 export async function preloadPaperAssets() {
