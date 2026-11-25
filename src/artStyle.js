@@ -58,7 +58,11 @@ function normalizeStyleId(raw) {
 
 /** Forced single-style demo host (separate URL per style). */
 export function soloStyleId() {
-  const raw = (import.meta.env.VITE_SOLO_STYLE || '').toLowerCase()
+  const raw = (
+    import.meta.env.VITE_SOLO_STYLE ||
+    import.meta.env.VITE_ART_STYLE ||
+    ''
+  ).toLowerCase()
   if (!raw) return null
   const id = normalizeStyleId(raw)
   return KNOWN.has(id) ? id : null

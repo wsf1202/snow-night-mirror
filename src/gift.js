@@ -88,7 +88,11 @@ export function buildShareUrl(
   const params = buildGiftSearchParams(config)
   const styleId = style || new URLSearchParams(window.location.search).get('style')
   // Solo-style demo hosts omit style= (the host itself is the pack).
-  const solo = (import.meta.env.VITE_SOLO_STYLE || '').toLowerCase()
+  const solo = (
+    import.meta.env.VITE_SOLO_STYLE ||
+    import.meta.env.VITE_ART_STYLE ||
+    ''
+  ).toLowerCase()
   if (!solo && (styleId === 'vintage' || styleId === 'paper')) {
     params.set('style', styleId)
   }
