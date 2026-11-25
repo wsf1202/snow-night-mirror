@@ -4,14 +4,6 @@
 
 **🌐 在线体验：** https://wsf1202.github.io/snow-night-mirror/
 
-## ✨ 效果预览
-
-<div align="center">
-
-![特效展示](public/effects/effect-visuals-polish-v3.jpg)
-
-</div>
-
 **定稿分支：** `cursor/christmas-camera-hci-1f8e`  
 
 **完整复刻规格（必读）：** [`docs/RECREATE.md`](./docs/RECREATE.md)  
