@@ -152,6 +152,8 @@ export class EffectsEngine {
       vx: rand(-0.35, 0.35),
       a: rand(0.4, 0.95),
       wobble: rand(0, Math.PI * 2),
+      rot: rand(0, Math.PI * 2),
+      spin: rand(-0.02, 0.02),
       sticky,
       born: performance.now(),
     }
@@ -649,17 +651,23 @@ export class EffectsEngine {
     if (this.fireplace) this._drawFireplace(ctx, this.fireplace, now)
     if (this.tree) this._drawTree(ctx, this.tree)
 
-    // Snow: pixel pack uses square flakes; vintage uses filigree snowflake sprite.
+    // Pixel: square flakes. Non-pixel: style-owned snowflake.png sprites (never reuse pixel snow).
+    const flakeImg = this.sprites.snowflake
+    const useSpriteSnow = artStyleId !== 'pixel' && flakeImg
     for (const f of this.snow) {
-      const s = Math.max(2, Math.round(f.r * 1.6))
-      if (artStyleId === 'vintage' && this.sprites.snowflake) {
-        const size = Math.max(10, s * 4.2)
-        drawSprite(ctx, this.sprites.snowflake, f.x, f.y, size, size, {
-          anchorX: 0.5,
-          anchorY: 0.5,
-          alpha: f.a * 0.92,
-        })
+      if (useSpriteSnow) {
+        f.rot = (f.rot || 0) + (f.spin || 0)
+        const size = Math.max(10, f.r * 7.5)
+        ctx.save()
+        ctx.translate(f.x, f.y)
+        ctx.rotate(f.rot)
+        ctx.globalAlpha = f.a * 0.92
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = 'high'
+        ctx.drawImage(flakeImg, -size / 2, -size / 2, size, size)
+        ctx.restore()
       } else {
+        const s = Math.max(2, Math.round(f.r * 1.6))
         ctx.fillStyle = `rgba(255,255,255,${f.a})`
         ctx.fillRect(Math.round(f.x), Math.round(f.y), s, s)
       }
