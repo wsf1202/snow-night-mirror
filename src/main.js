@@ -1,5 +1,6 @@
 import './style.css'
 import './style-vintage.css'
+import './style-neon.css'
 import { FilesetResolver, HandLandmarker, PoseLandmarker } from '@mediapipe/tasks-vision'
 import { EffectsEngine, EFFECT_META, configureEffectsArt } from './effects.js'
 import { GestureDetector } from './gestures.js'
@@ -14,6 +15,7 @@ import { openCamera } from './camera.js'
 import { GestureCoach, shouldStartCoach } from './coach.js'
 import { preloadPixelAssets } from './pixelAssets.js'
 import { preloadVintageAssets, VINTAGE } from './vintageAssets.js'
+import { preloadNeonAssets, NEON } from './neonAssets.js'
 import {
   resolveArtStyle,
   persistArtStyle,
@@ -33,8 +35,18 @@ if (art.id === 'vintage') {
     `url("${VINTAGE.heroPostcard}")`,
   )
 }
-document.title =
-  art.id === 'vintage' ? '雪夜祝福 · 复古明信片' : '雪夜祝福 · 像素圣诞镜'
+if (art.id === 'neon') {
+  document.documentElement.style.setProperty(
+    '--neon-hero',
+    `url("${NEON.heroNeon}")`,
+  )
+}
+const TITLE_BY_STYLE = {
+  pixel: '雪夜祝福 · 像素圣诞镜',
+  vintage: '雪夜祝福 · 复古明信片',
+  neon: '雪夜祝福 · 霓虹夜镜',
+}
+document.title = TITLE_BY_STYLE[art.id] || TITLE_BY_STYLE.pixel
 
 const WASM =
   'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/wasm'
@@ -61,6 +73,18 @@ function heroSpritesHtml() {
         <img class="hs hs-candle" src="${BASE}vintage/candle.png?v=1" alt="" />
         <img class="hs hs-holly" src="${BASE}vintage/frame/deco-0.png?v=1" alt="" />
         <img class="hs hs-pine" src="${BASE}vintage/frame/deco-2.png?v=1" alt="" />
+    `
+  }
+  if (art.id === 'neon') {
+    return `
+        <img class="hs hs-tree" src="${BASE}neon/tree.png?v=2" alt="" />
+        <img class="hs hs-gift" src="${BASE}neon/gift.png?v=2" alt="" />
+        <img class="hs hs-bell" src="${BASE}neon/bell.png?v=2" alt="" />
+        <img class="hs hs-hat" src="${BASE}neon/santa-hat.png?v=2" alt="" />
+        <img class="hs hs-antlers" src="${BASE}neon/antlers.png?v=2" alt="" />
+        <img class="hs hs-cane" src="${BASE}neon/frame/deco-0.png?v=2" alt="" />
+        <img class="hs hs-holly" src="${BASE}neon/frame/deco-1.png?v=2" alt="" />
+        <img class="hs hs-pine" src="${BASE}neon/frame/deco-6.png?v=2" alt="" />
     `
   }
   return `
@@ -102,6 +126,7 @@ app.innerHTML = `
           <span class="style-picker-label">画风</span>
           <a class="style-chip" href="${styleHomeHref('pixel', BASE)}" aria-current="${art.id === 'pixel' ? 'page' : 'false'}">像素雪夜</a>
           <a class="style-chip" href="${styleHomeHref('vintage', BASE)}" aria-current="${art.id === 'vintage' ? 'page' : 'false'}">复古明信片</a>
+          <a class="style-chip" href="${styleHomeHref('neon', BASE)}" aria-current="${art.id === 'neon' ? 'page' : 'false'}">霓虹</a>
         </div>
         <p class="privacy-note">画面仅在浏览器本地处理，不会上传。</p>
       </div>
@@ -205,7 +230,7 @@ function seedViewportFrame() {
       ]
         .filter(Boolean)
         .join(';')
-      const decoVer = art.id === 'vintage' ? '1' : '53'
+      const decoVer = art.id === 'pixel' ? '53' : art.id === 'neon' ? '2' : '1'
       return `<img class="vf-pixel" src="${BASE}${assetRoot}/frame/deco-${p.i}.png?v=${decoVer}" alt="" style="${pos}" data-i="${idx}" />`
     })
     .join('')
@@ -300,7 +325,11 @@ async function startExperience() {
   `
 
   const preloadArt =
-    art.id === 'vintage' ? preloadVintageAssets() : preloadPixelAssets()
+    art.id === 'vintage'
+      ? preloadVintageAssets()
+      : art.id === 'neon'
+        ? preloadNeonAssets()
+        : preloadPixelAssets()
   await Promise.all([initModels(), preloadArt, effects.reloadArtSprites()])
   resizeStage()
   window.addEventListener('resize', resizeStage)

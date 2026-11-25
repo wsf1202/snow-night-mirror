@@ -87,7 +87,7 @@ export function buildShareUrl(
 ) {
   const params = buildGiftSearchParams(config)
   const styleId = style || new URLSearchParams(window.location.search).get('style')
-  if (styleId === 'vintage') params.set('style', 'vintage')
+  if (styleId === 'vintage' || styleId === 'neon') params.set('style', styleId)
   const base =
     basePath != null
       ? basePath

@@ -1,5 +1,6 @@
 import './style.css'
 import './style-vintage.css'
+import './style-neon.css'
 import {
   BOX_STYLES,
   MAX_BLESSING,
@@ -18,6 +19,7 @@ import {
   styleHomeHref,
 } from './artStyle.js'
 import { VINTAGE } from './vintageAssets.js'
+import { NEON } from './neonAssets.js'
 
 const BASE = import.meta.env.BASE_URL
 const art = resolveArtStyle()
@@ -30,6 +32,13 @@ if (art.id === 'vintage') {
     `url("${VINTAGE.heroPostcard}")`,
   )
   document.title = '定制礼物 · 复古明信片'
+}
+if (art.id === 'neon') {
+  document.documentElement.style.setProperty(
+    '--neon-hero',
+    `url("${NEON.heroNeon}")`,
+  )
+  document.title = '定制礼物 · 霓虹'
 }
 
 const homeHref = styleHomeHref(art.id, BASE)

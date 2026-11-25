@@ -9,6 +9,7 @@ import {
 } from './audio.js'
 import { PIXEL, loadImage, drawPixelSprite } from './pixelAssets.js'
 import { VINTAGE, drawVintageSprite } from './vintageAssets.js'
+import { NEON, drawNeonSprite } from './neonAssets.js'
 
 /** Active art pack — default pixel (kept build). */
 let ART = PIXEL
@@ -18,12 +19,18 @@ let artStyleId = 'pixel'
 
 /** Swap Christmas art style without forking the effect state machine. */
 export function configureEffectsArt(styleId = 'pixel') {
-  artStyleId = styleId === 'vintage' ? 'vintage' : 'pixel'
-  if (artStyleId === 'vintage') {
+  if (styleId === 'vintage') {
+    artStyleId = 'vintage'
     ART = VINTAGE
     drawSprite = drawVintageSprite
     scrubSprites = false
+  } else if (styleId === 'neon') {
+    artStyleId = 'neon'
+    ART = NEON
+    drawSprite = drawNeonSprite
+    scrubSprites = false
   } else {
+    artStyleId = 'pixel'
     ART = PIXEL
     drawSprite = drawPixelSprite
     scrubSprites = true
@@ -912,7 +919,7 @@ export class EffectsEngine {
     ctx.globalAlpha = fade
     ctx.translate(g.x, g.y)
     ctx.scale(scale, scale)
-    ctx.imageSmoothingEnabled = artStyleId === 'vintage'
+    ctx.imageSmoothingEnabled = artStyleId !== 'pixel'
 
     // Lid intentionally wider than body so open/closed read as two pieces
     const closed = this.sprites.gift
@@ -950,26 +957,22 @@ export class EffectsEngine {
         const bw = Math.min(280, this.w * 0.65)
         const bh = g.signature ? 78 : 56
         const gapY = boxBottom - bodyH - lidLift * 0.35
-        const vintage = artStyleId === 'vintage'
-        ctx.fillStyle = vintage ? 'rgba(243, 234, 214, 0.96)' : 'rgba(12, 26, 18, 0.94)'
+        const card = blessingCardStyle(artStyleId)
+        ctx.fillStyle = card.fill
         ctx.fillRect(-bw / 2, gapY - bh / 2, bw, bh)
-        ctx.strokeStyle = vintage ? '#8c3636' : '#c9a227'
-        ctx.lineWidth = vintage ? 2 : 3
+        ctx.strokeStyle = card.stroke
+        ctx.lineWidth = card.lineWidth
         ctx.strokeRect(-bw / 2, gapY - bh / 2, bw, bh)
         ctx.save()
         ctx.scale(-1, 1)
-        ctx.fillStyle = vintage ? '#2f241c' : '#f2e6d0'
-        ctx.font = vintage
-          ? '600 20px "Noto Serif SC", "Cormorant Garamond", serif'
-          : '20px "ZCOOL KuaiLe", sans-serif'
+        ctx.fillStyle = card.text
+        ctx.font = card.font
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         wrapText(ctx, g.blessing, 0, gapY - (g.signature ? 10 : 0), bw - 24, 24)
         if (g.signature) {
-          ctx.fillStyle = vintage ? 'rgba(140,54,54,0.9)' : 'rgba(201,162,39,0.95)'
-          ctx.font = vintage
-            ? '500 15px "Noto Serif SC", "Cormorant Garamond", serif'
-            : '15px "ZCOOL KuaiLe", sans-serif'
+          ctx.fillStyle = card.sig
+          ctx.font = card.sigFont
           ctx.fillText(`— ${g.signature}`, 0, gapY + 22)
         }
         ctx.restore()
@@ -1280,6 +1283,40 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   if (line) lines.push(line)
   const startY = y - ((lines.length - 1) * lineHeight) / 2
   lines.forEach((ln, i) => ctx.fillText(ln, x, startY + i * lineHeight))
+}
+
+function blessingCardStyle(styleId) {
+  if (styleId === 'vintage') {
+    return {
+      fill: 'rgba(243, 234, 214, 0.96)',
+      stroke: '#8c3636',
+      lineWidth: 2,
+      text: '#2f241c',
+      sig: 'rgba(140,54,54,0.9)',
+      font: '600 20px "Noto Serif SC", "Cormorant Garamond", serif',
+      sigFont: '500 15px "Noto Serif SC", "Cormorant Garamond", serif',
+    }
+  }
+  if (styleId === 'neon') {
+    return {
+      fill: 'rgba(5, 12, 28, 0.92)',
+      stroke: '#00f0ff',
+      lineWidth: 2,
+      text: '#e8f7ff',
+      sig: 'rgba(184,255,60,0.95)',
+      font: '600 20px "Noto Sans SC", "Orbitron", sans-serif',
+      sigFont: '500 15px "Noto Sans SC", "Orbitron", sans-serif',
+    }
+  }
+  return {
+    fill: 'rgba(12, 26, 18, 0.94)',
+    stroke: '#c9a227',
+    lineWidth: 3,
+    text: '#f2e6d0',
+    sig: 'rgba(201,162,39,0.95)',
+    font: '20px "ZCOOL KuaiLe", sans-serif',
+    sigFont: '15px "ZCOOL KuaiLe", sans-serif',
+  }
 }
 
 /** MediaPipe Hands gestures — coach/dock cards; guides follow active art pack. */
