@@ -27,6 +27,12 @@ npm run build
 npm run preview
 ```
 
+## 微信小程序
+
+原生小程序脚手架在 [`miniprogram/`](./miniprogram/)，工程配置见根目录 `project.config.json`（AppID 占位 `touristappid`）。
+
+用微信开发者工具导入**仓库根目录**，详见 [`miniprogram/README.md`](./miniprogram/README.md)。
+
 ## 🎮 手势速查
 
 | 特效 | 手势 | 预览 |

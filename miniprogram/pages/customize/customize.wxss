@@ -1,0 +1,131 @@
+.customize-page {
+  padding: 32rpx 36rpx 80rpx;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 680rpx;
+  margin: 0 auto;
+}
+
+.nav-back {
+  display: inline-block;
+  color: var(--gold-soft);
+  font-size: 26rpx;
+  margin-bottom: 24rpx;
+}
+
+.title {
+  display: block;
+  font-size: 52rpx;
+  font-weight: 700;
+  color: var(--cream);
+  text-shadow: 4rpx 4rpx 0 #1a3d2a;
+  margin-bottom: 12rpx;
+}
+
+.sub {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.55;
+  color: var(--cream-dim);
+  margin-bottom: 40rpx;
+}
+
+.field {
+  margin-bottom: 32rpx;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.label {
+  font-size: 26rpx;
+  color: var(--gold-soft);
+}
+
+.meta {
+  font-size: 22rpx;
+  color: var(--cream-dim);
+}
+
+.input {
+  width: 100%;
+  padding: 20rpx 24rpx;
+  background: rgba(20, 48, 36, 0.85);
+  border: 4rpx solid #1a3d2a;
+  color: var(--cream);
+  font-size: 28rpx;
+  border-radius: 0;
+}
+
+.area {
+  min-height: 140rpx;
+  width: 100%;
+}
+
+.box-picks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.box-pick {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx;
+  border: 4rpx solid #1a3d2a;
+  background: rgba(11, 26, 18, 0.7);
+  font-size: 24rpx;
+  color: var(--cream);
+}
+
+.box-pick.active {
+  border-color: var(--gold);
+  box-shadow: 6rpx 6rpx 0 #1a3d2a;
+}
+
+.swatch {
+  width: 48rpx;
+  height: 48rpx;
+  border: 3rpx solid #1a3d2a;
+  border-bottom-width: 10rpx;
+  flex-shrink: 0;
+}
+
+.cta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-top: 12rpx;
+}
+
+.share-result {
+  margin-top: 36rpx;
+  padding: 24rpx;
+  border: 4rpx solid var(--pine);
+  background: rgba(20, 48, 36, 0.5);
+}
+
+.share-text {
+  display: block;
+  margin: 12rpx 0 20rpx;
+  font-size: 22rpx;
+  color: var(--gold-soft);
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+.footer {
+  display: block;
+  margin-top: 48rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--cream-dim);
+}

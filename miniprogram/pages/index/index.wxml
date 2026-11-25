@@ -1,0 +1,37 @@
+<view class="ambient-bg landing">
+  <view class="hero-sprites" aria-hidden="true">
+    <image class="hs hs-tree" src="/assets/pixel/tree.png" mode="aspectFit" />
+    <image class="hs hs-gift" src="/assets/pixel/gift.png" mode="aspectFit" />
+    <image class="hs hs-bell" src="/assets/pixel/bell.png" mode="aspectFit" />
+    <image class="hs hs-hat" src="/assets/pixel/santa-hat.png" mode="aspectFit" />
+    <image class="hs hs-antlers" src="/assets/pixel/antlers.png" mode="aspectFit" />
+    <image class="hs hs-cane" src="/assets/pixel/frame/deco-0.png" mode="aspectFit" />
+    <image class="hs hs-holly" src="/assets/pixel/frame/deco-1.png" mode="aspectFit" />
+    <image class="hs hs-pine" src="/assets/pixel/frame/deco-7.png" mode="aspectFit" />
+  </view>
+
+  <view class="snow-layer">
+    <view wx:for="{{snowflakes}}" wx:key="id" class="flake" style="left:{{item.left}}%;animation-duration:{{item.dur}}s;animation-delay:{{item.delay}}s;opacity:{{item.opacity}};width:{{item.size}}rpx;height:{{item.size}}rpx;"></view>
+  </view>
+
+  <view class="hero-inner">
+    <text class="pixel-tag">PIXEL SNOW NIGHT</text>
+    <view class="brand">
+      <text class="brand-zh">雪夜祝福</text>
+      <text class="brand-latin">Snow Night Mirror</text>
+    </view>
+    <text class="hero-lead">像素雪夜互动镜 · 对着镜头做手势，打开专属礼物祝福。</text>
+
+    <view class="cta-row">
+      <button class="pixel-btn pixel-btn-primary" bindtap="onStartCamera">开启摄像头</button>
+      <button class="pixel-btn pixel-btn-ghost" bindtap="onCustomize">定制礼物祝福</button>
+    </view>
+
+    <text class="privacy-note">画面仅在手机本地处理，不会上传。</text>
+
+    <view wx:if="{{showPayHint}}" class="pay-hint">
+      <text>虚拟支付入口已预留（当前关闭）。开通后可解锁进阶特效。</text>
+      <button class="pixel-btn pixel-btn-ghost pay-btn" size="mini" bindtap="onTryPay">了解虚拟支付</button>
+    </view>
+  </view>
+</view>

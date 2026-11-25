@@ -1,0 +1,9 @@
+{
+  "desc": "雪夜祝福小程序 sitemap",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+/* 雪夜祝福 · 像素圣诞设计令牌（对齐 web 定稿） */
+page {
+  --bg-deep: #0b1a12;
+  --bg-mid: #143024;
+  --pine: #2f6b45;
+  --pine-lit: #3f8a58;
+  --crimson: #b03a3a;
+  --crimson-soft: #d45a5a;
+  --gold: #e0b84a;
+  --gold-soft: #f2d87a;
+  --cream: #f4ecd8;
+  --cream-dim: rgba(244, 236, 216, 0.78);
+  --ink: #0a1510;
+
+  background: var(--bg-deep);
+  color: var(--cream);
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+view,
+text,
+button,
+input,
+textarea,
+image {
+  box-sizing: border-box;
+}
+
+.pixel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 20rpx 36rpx;
+  font-size: 30rpx;
+  line-height: 1.2;
+  color: var(--cream);
+  background: var(--crimson);
+  border: 4rpx solid #1a3d2a;
+  border-radius: 0;
+  box-shadow: 8rpx 8rpx 0 #1a3d2a;
+}
+
+.pixel-btn::after {
+  border: none;
+}
+
+.pixel-btn-primary {
+  background: var(--crimson);
+  color: var(--cream);
+}
+
+.pixel-btn-ghost {
+  background: transparent;
+  color: var(--gold-soft);
+  border-color: var(--pine-lit);
+  box-shadow: 8rpx 8rpx 0 rgba(26, 61, 42, 0.55);
+}
+
+.pixel-btn-disabled,
+.pixel-btn[disabled] {
+  opacity: 0.45;
+}
+
+.privacy-note {
+  margin-top: 28rpx;
+  font-size: 22rpx;
+  color: var(--cream-dim);
+  line-height: 1.5;
+}
+
+.ambient-bg {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(42, 107, 69, 0.35), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 90%, rgba(155, 27, 27, 0.22), transparent 50%),
+    radial-gradient(ellipse 40% 35% at 10% 80%, rgba(201, 162, 39, 0.12), transparent 45%),
+    linear-gradient(180deg, #0a1a12 0%, #07140e 45%, #0b120e 100%);
+}

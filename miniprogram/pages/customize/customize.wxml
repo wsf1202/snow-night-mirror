@@ -1,0 +1,65 @@
+<view class="ambient-bg customize-page">
+  <view class="inner">
+    <view class="nav-back" bindtap="onBack">← 返回</view>
+    <text class="title">定制礼物</text>
+    <text class="sub">写下一句祝福，保存后进入体验。朋友打开分享卡片即可看见你的专属文案。</text>
+
+    <view class="field">
+      <view class="label-row">
+        <text class="label">祝福文案</text>
+        <text class="meta">{{blessCount}}/{{maxBlessing}}</text>
+      </view>
+      <textarea
+        class="input area"
+        maxlength="{{maxBlessing}}"
+        value="{{blessing}}"
+        placeholder="圣诞快乐！"
+        bindinput="onBlessingInput"
+      />
+    </view>
+
+    <view class="field">
+      <view class="label-row">
+        <text class="label">署名（可选）</text>
+        <text class="meta">{{sigCount}}/{{maxSignature}}</text>
+      </view>
+      <input
+        class="input"
+        maxlength="{{maxSignature}}"
+        value="{{signature}}"
+        placeholder="例如：小雪"
+        bindinput="onSignatureInput"
+      />
+    </view>
+
+    <view class="field">
+      <text class="label">礼物盒外观</text>
+      <view class="box-picks">
+        <view
+          wx:for="{{boxStyles}}"
+          wx:key="id"
+          class="box-pick {{selectedBox === item.id ? 'active' : ''}}"
+          data-box="{{item.id}}"
+          bindtap="onPickBox"
+        >
+          <view class="swatch" style="background:{{item.box}};border-bottom-color:{{item.ribbon}};"></view>
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="cta-row">
+      <button class="pixel-btn pixel-btn-primary" bindtap="onSave">保存并体验</button>
+      <button class="pixel-btn pixel-btn-ghost" bindtap="onSharePreview" open-type="">生成分享参数</button>
+    </view>
+
+    <view wx:if="{{shareQuery}}" class="share-result">
+      <text class="label">分享参数（可拼到小程序 path）</text>
+      <text class="share-text" selectable>pages/stage/stage?{{shareQuery}}</text>
+      <button class="pixel-btn pixel-btn-ghost" bindtap="onCopyQuery">复制</button>
+      <text class="privacy-note">祝福写在启动参数里；摄像头画面仍只在对方手机本地处理。</text>
+    </view>
+
+    <text class="footer">雪夜祝福 · Phase 1 · 文案定制</text>
+  </view>
+</view>

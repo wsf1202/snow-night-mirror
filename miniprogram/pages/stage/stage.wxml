@@ -1,0 +1,103 @@
+<view class="stage-page">
+  <view class="topbar">
+    <text class="topbar-brand">雪夜祝福</text>
+    <view class="topbar-actions">
+      <button class="icon-btn" size="mini" bindtap="onToggleMute">{{muted ? '已静音' : '音效开'}}</button>
+      <button class="icon-btn" size="mini" bindtap="onReplayCoach" wx:if="{{freePlay}}">再看引导</button>
+      <button class="icon-btn" size="mini" bindtap="onCustomize">定制礼物</button>
+    </view>
+  </view>
+
+  <view class="viewport">
+    <camera
+      wx:if="{{cameraOn}}"
+      id="cam"
+      class="cam"
+      device-position="front"
+      flash="off"
+      resolution="medium"
+      frame-size="small"
+      binderror="onCameraError"
+      bindinitdone="onCameraReady"
+    />
+    <view wx:else class="cam-placeholder">
+      <text>等待摄像头授权…</text>
+    </view>
+
+    <canvas
+      type="2d"
+      id="overlay"
+      class="overlay"
+      style="width:{{canvasCssW}}px;height:{{canvasCssH}}px;"
+    ></canvas>
+
+    <view class="viewport-frame" aria-hidden="true">
+      <image
+        wx:for="{{frameDecos}}"
+        wx:key="id"
+        class="deco"
+        src="{{item.src}}"
+        style="top:{{item.top}};left:{{item.left}};right:{{item.right}};bottom:{{item.bottom}};transform:rotate({{item.rot}}deg) scale({{item.scale}});"
+        mode="aspectFit"
+      />
+    </view>
+
+    <view class="toast" wx:if="{{toast}}">{{toast}}</view>
+
+    <view class="coach-panel" wx:if="{{coachActive}}">
+      <text class="coach-progress">手势练习 {{coachIndex + 1}} / {{effects.length}}</text>
+      <image class="coach-guide" src="{{currentEffect.guide}}" mode="aspectFit" />
+      <text class="coach-title">{{currentEffect.name}}</text>
+      <text class="coach-hint">{{coachHint}}</text>
+      <text class="coach-status">{{coachStatus}}</text>
+      <view class="coach-actions">
+        <button class="pixel-btn pixel-btn-ghost coach-btn" size="mini" bindtap="onCoachPrev" disabled="{{coachIndex === 0}}">← 上一步</button>
+        <button class="pixel-btn pixel-btn-ghost coach-btn" size="mini" bindtap="onCoachSkip">跳过该动作 →</button>
+      </view>
+      <button class="pixel-btn pixel-btn-primary coach-ok" bindtap="onCoachNext">比 OK / 下一步</button>
+    </view>
+
+    <button class="skip-all" wx:if="{{coachActive}}" bindtap="onSkipAll">跳过指引</button>
+
+    <view class="free-banner" wx:if="{{freePlay}}">
+      <text>自由体验</text>
+    </view>
+
+    <view class="loading-veil" wx:if="{{loading}}">
+      <view class="spinner"></view>
+      <text>正在唤醒摄像头…</text>
+      <text class="stub-note">手势引擎 v1 为 stub，可用「下一步」走完指引</text>
+    </view>
+  </view>
+
+  <scroll-view class="effects-dock" scroll-x>
+    <view
+      wx:for="{{effects}}"
+      wx:key="id"
+      class="dock-item {{item.id === highlightId ? 'on' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="onDockTap"
+    >
+      <text>{{item.name}}</text>
+    </view>
+  </scroll-view>
+
+  <view class="dock-hint" wx:if="{{dockHint}}">
+    <text class="dock-hint-title">{{dockHint.name}}</text>
+    <text class="dock-hint-body">{{dockHint.hint}}</text>
+  </view>
+
+  <view class="dev-bar" wx:if="{{showDevBar}}">
+    <text class="dev-label">开发：手动触发特效（gesture stub）</text>
+    <view class="dev-row">
+      <button
+        wx:for="{{effects}}"
+        wx:key="id"
+        class="icon-btn"
+        size="mini"
+        data-id="{{item.id}}"
+        bindtap="onDebugEffect"
+      >{{item.name}}</button>
+    </view>
+  </view>
+</view>
