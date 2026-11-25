@@ -80,6 +80,7 @@ export class EffectsEngine {
       giftLid: null,
       bell: null,
       tree: null,
+      snowflake: null,
     }
     /** Separate timers — only after their own gestures */
     this.hatUntil = 0
@@ -97,6 +98,9 @@ export class EffectsEngine {
     this.sprites.giftLid = await loadImage(ART.giftLid, { scrubMagenta: scrub })
     this.sprites.bell = await loadImage(ART.bell)
     this.sprites.tree = await loadImage(ART.tree, { scrubMagenta: scrub })
+    this.sprites.snowflake = ART.snowflake
+      ? await loadImage(ART.snowflake)
+      : null
   }
 
   /** Reload sprites after art pack swap (before stage starts). */
@@ -645,11 +649,20 @@ export class EffectsEngine {
     if (this.fireplace) this._drawFireplace(ctx, this.fireplace, now)
     if (this.tree) this._drawTree(ctx, this.tree)
 
-    // pixel snow (square flakes)
+    // Snow: pixel pack uses square flakes; vintage uses filigree snowflake sprite.
     for (const f of this.snow) {
       const s = Math.max(2, Math.round(f.r * 1.6))
-      ctx.fillStyle = `rgba(255,255,255,${f.a})`
-      ctx.fillRect(Math.round(f.x), Math.round(f.y), s, s)
+      if (artStyleId === 'vintage' && this.sprites.snowflake) {
+        const size = Math.max(10, s * 4.2)
+        drawSprite(ctx, this.sprites.snowflake, f.x, f.y, size, size, {
+          anchorX: 0.5,
+          anchorY: 0.5,
+          alpha: f.a * 0.92,
+        })
+      } else {
+        ctx.fillStyle = `rgba(255,255,255,${f.a})`
+        ctx.fillRect(Math.round(f.x), Math.round(f.y), s, s)
+      }
     }
 
     if (this.gift && this.gift.phase !== 'done') this._drawGift(ctx)

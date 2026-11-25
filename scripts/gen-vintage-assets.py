@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Generate vintage-postcard Christmas prop sprites (muted crimson/forest/cream)."""
+"""DEPRECATED stub — do not ship as production vintage art.
+
+v1 used crude geometry. Production look: GenerateImage per
+skills/vintage-postcard-assets/SKILL.md, then scripts/process-vintage-v2.py.
+"""
 
 from __future__ import annotations
 
