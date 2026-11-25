@@ -78,7 +78,6 @@ app.innerHTML = `
         <button type="button" class="btn-skip-guide" id="skipGuideBtn" hidden>跳过指引</button>
         <div class="hint-banner" id="hintBanner" hidden>
           <strong>自由体验</strong>
-          <span>用手势触发特效 · 悬停下方名称可看示意</span>
         </div>
         <div class="loading-veil" id="loadingVeil">
           <div>
@@ -308,7 +307,7 @@ function enterFreePlay() {
   lastFreeTriggerAt = 0
   resetCarol()
   hintBanner.hidden = false
-  hintBanner.innerHTML = `<strong>自由体验</strong><span>一次一个特效 · 铃铛可连续 · 画面可并存</span>`
+  hintBanner.innerHTML = `<strong>自由体验</strong>`
   replayCoachBtn.hidden = false
   skipGuideBtn.hidden = true
   highlightDock(null)
