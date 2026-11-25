@@ -65,21 +65,23 @@ export function loadImage(src, { scrubMagenta = false } = {}) {
   return p
 }
 
+const BASE = import.meta.env.BASE_URL
+
 export const PIXEL = {
-  guideSnow: '/pixel/guide-snow.jpg?v=51',
-  guideGift: '/pixel/guide-gift.jpg?v=51',
-  guideBell: '/pixel/guide-bell.jpg?v=51',
-  guideAntlers: '/pixel/guide-antlers.jpg?v=51',
-  guideHat: '/pixel/guide-hat.jpg?v=51',
-  guideNext: '/pixel/guide-next.jpg?v=51',
-  guideTree: '/pixel/guide-tree.jpg?v=51',
-  santaHat: '/pixel/santa-hat.png?v=3',
-  antlers: '/pixel/antlers.png?v=2',
-  gift: '/pixel/gift.png?v=52',
-  giftBox: '/pixel/gift-box.png?v=52',
-  giftLid: '/pixel/gift-lid.png?v=52',
-  bell: '/pixel/bell.png',
-  tree: '/pixel/tree.png?v=49',
+  guideSnow: `${BASE}pixel/guide-snow.jpg?v=51`,
+  guideGift: `${BASE}pixel/guide-gift.jpg?v=51`,
+  guideBell: `${BASE}pixel/guide-bell.jpg?v=51`,
+  guideAntlers: `${BASE}pixel/guide-antlers.jpg?v=51`,
+  guideHat: `${BASE}pixel/guide-hat.jpg?v=51`,
+  guideNext: `${BASE}pixel/guide-next.jpg?v=51`,
+  guideTree: `${BASE}pixel/guide-tree.jpg?v=51`,
+  santaHat: `${BASE}pixel/santa-hat.png?v=3`,
+  antlers: `${BASE}pixel/antlers.png?v=2`,
+  gift: `${BASE}pixel/gift.png?v=52`,
+  giftBox: `${BASE}pixel/gift-box.png?v=52`,
+  giftLid: `${BASE}pixel/gift-lid.png?v=52`,
+  bell: `${BASE}pixel/bell.png`,
+  tree: `${BASE}pixel/tree.png?v=49`,
 }
 
 export async function preloadPixelAssets() {
