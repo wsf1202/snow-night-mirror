@@ -174,9 +174,9 @@ function seedAmbientSnow() {
   const paperFlakes =
     art.id === 'paper'
       ? [
-          `${BASE}paper/snowflake.png?v=5`,
-          `${BASE}paper/snowflake-b.png?v=5`,
-          `${BASE}paper/snowflake-c.png?v=5`,
+          `${BASE}paper/snowflake.png?v=6`,
+          `${BASE}paper/snowflake-b.png?v=6`,
+          `${BASE}paper/snowflake-c.png?v=6`,
         ]
       : null
   const count = paperFlakes ? 16 : 22
