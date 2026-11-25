@@ -8,20 +8,45 @@
 
 ---
 
-## 用微信开发者工具打开
+## 用微信开发者工具打开（重要）
+
+### 推荐：直接选 `miniprogram` 目录
 
 1. 安装 [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
-2. **导入项目** → 选择本仓库根目录（含 `project.config.json` 的目录）
-3. `miniprogramRoot` 已指向 `miniprogram/`
-4. AppID：
-   - 无正式号时选「测试号」或使用占位 `touristappid`（已写在 `project.config.json`）
-   - 拿到正式 AppID 后，在开发者工具「详情 → 基本信息」或直接改 `project.config.json` 的 `appid` 字段为 `YOUR_APPID`
-5. 真机预览需开启摄像头权限；部分模拟器不支持 `onCameraFrame`
+2. **导入项目** → 项目目录选：
+
+```text
+…/snow-night-mirror/miniprogram
+```
+
+（该目录内有 `app.json`、`app.js`、`project.config.json`、`pages/`）
+
+3. AppID：无正式号时用测试号或占位 `touristappid`
+4. 编译后首页应为 **雪夜祝福** 落地页（`pages/index/index`）
+
+### 也可以：选仓库根目录
+
+```text
+…/snow-night-mirror
+```
+
+根目录 `project.config.json` 的 `miniprogramRoot` 指向 `miniprogram/`。  
+**不要**指望在小程序模拟器里看到 Vite 的 `index.html`（那是 Web 版）。
+
+### 常见踩坑
+
+| 错误做法 | 结果 |
+|----------|------|
+| 只打开仓库根却未识别 `miniprogramRoot` | 找不到 `app.json` / 空白 |
+| 把 Web `index.html` 当小程序页 | 看到的不是小程序 UI |
+| WXSS 里写 `view`/`page`/`[disabled]` 等标签·属性选择器 | 报「组件 wxss 中不可以指定标签名选择器」 |
+
+样式约定：只用 **class** 选择器；页面根节点加 `page-root`（见 `app.wxss`）。
 
 ### 替换 AppID
 
 ```jsonc
-// project.config.json
+// miniprogram/project.config.json 或 仓库根 project.config.json
 {
   "appid": "touristappid"  // → 换成 wxXXXXXXXXXXXXXXXX
 }
@@ -34,22 +59,20 @@
 ## 目录结构
 
 ```
-project.config.json          # 工具工程配置（appid 占位）
-miniprogram/
-  app.js / app.json / app.wxss
-  pages/
-    index/                   # 落地页（品牌 + CTA + 隐私说明）
-    customize/               # 祝福文案 / 署名 / 盒款
-    stage/                   # 摄像头舞台 + 6 步指引 + 自由体验
-  utils/
-    config.js                # FEATURES 开关（含 virtualPayment）
-    gift.js                  # 礼物配置（对齐 web）
-    effects-meta.js          # 特效/指引元数据
-    gestures.js              # 手势 stub + TODO
-    payment.js               # requestVirtualPayment 钩子（无密钥）
-  assets/pixel/              # 像素精灵与指引图（自 web public/pixel）
-  README.md                  # 本文件
+snow-night-mirror/                 # 仓库根（Web + 小程序）
+  project.config.json              # 可选：打开仓库根时用（miniprogramRoot）
+  miniprogram/                     # ← 推荐作为 DevTools 项目目录
+    project.config.json            # 独立小程序工程配置
+    app.js / app.json / app.wxss
+    pages/
+      index/                       # 落地页（首页）
+      customize/
+      stage/
+    utils/
+    assets/pixel/
 ```
+
+`app.json` → `pages[0]` = `pages/index/index`（启动页）。
 
 ---
 
@@ -70,11 +93,10 @@ miniprogram/
 ## 下一步（上架 / 变现）
 
 1. **注册小程序**（个人主体可用）→ 拿到 AppID，替换占位
-2. **类目：** 优先选「工具」等个人主体可开放类目（以微信公众平台当时规则为准）；避免无资质的电商/社交类目
-3. **隐私协议：** 声明摄像头用途为本地互动；与 UI 文案「画面仅在手机本地处理」一致
-4. **虚拟支付：** 在公众平台开通虚拟支付 → 配置 offer / 商品 → 部署签名后端 → 将 `FEATURES.virtualPayment` 设为 `true`
-5. **手势 v2：** 评估本地模型 / 微信 AI；保持「不上传画面」；通过后再开 `gestureRuntime`
-6. **标准商户支付：** 若后续需要实体/非虚拟商品，再走企业主体 + 微信支付（非本脚手架范围）
+2. **类目：** 优先选「工具」等个人主体可开放类目（以微信公众平台当时规则为准）
+3. **隐私协议：** 声明摄像头用途为本地互动
+4. **虚拟支付：** 开通 → 部署签名后端 → `FEATURES.virtualPayment=true`
+5. **手势 v2：** 本地推理优先，保持「不上传画面」
 
 ---
 
@@ -85,15 +107,4 @@ miniprogram/
 | `index.html` 落地 + 舞台 | `pages/index` + `pages/stage` |
 | `customize.html` | `pages/customize` |
 | MediaPipe Hands/Pose | stub（`utils/gestures.js`） |
-| Canvas 特效引擎 | overlay stub + 指引 UI |
 | 分享 URL `/?b=&s=&box=` | path 参数 `pages/stage/stage?b=&s=&box=` |
-
-Web 在线体验（若隧道可用）：见仓库根 README / 项目文档。
-
----
-
-## 本地开发提示
-
-- 基础库建议 ≥ 2.9（Camera）/ 虚拟支付按官方文档要求的版本
-- 真机调试：开发者工具 → 预览 → 扫码
-- `project.private.config.json` 可放本机偏好；不要提交密钥

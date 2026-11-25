@@ -1,4 +1,4 @@
-<view class="ambient-bg landing">
+<view class="page-root ambient-bg landing">
   <view class="hero-sprites" aria-hidden="true">
     <image class="hs hs-tree" src="/assets/pixel/tree.png" mode="aspectFit" />
     <image class="hs hs-gift" src="/assets/pixel/gift.png" mode="aspectFit" />

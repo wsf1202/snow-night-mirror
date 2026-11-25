@@ -13,11 +13,9 @@
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents",
   "permission": {
     "scope.camera": {
       "desc": "用于本地手势互动与圣诞特效，画面不会上传"
     }
-  },
-  "requiredPrivateInfos": []
+  }
 }

@@ -4,6 +4,8 @@
   justify-content: center;
   padding: 48rpx 40rpx 80rpx;
   text-align: center;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .hero-sprites {
@@ -115,7 +117,8 @@
 .pixel-tag {
   font-size: 20rpx;
   letter-spacing: 4rpx;
-  color: var(--gold);
+  color: #e0b84a;
+  color: var(--gold, #e0b84a);
   margin-bottom: 20rpx;
 }
 
@@ -130,21 +133,24 @@
   font-size: 72rpx;
   font-weight: 700;
   line-height: 1.15;
-  color: var(--cream);
+  color: #f4ecd8;
+  color: var(--cream, #f4ecd8);
   text-shadow: 4rpx 4rpx 0 #1a3d2a;
 }
 
 .brand-latin {
   margin-top: 12rpx;
   font-size: 22rpx;
-  color: var(--gold-soft);
+  color: #f2d87a;
+  color: var(--gold-soft, #f2d87a);
   letter-spacing: 2rpx;
 }
 
 .hero-lead {
   font-size: 28rpx;
   line-height: 1.55;
-  color: var(--cream-dim);
+  color: rgba(244, 236, 216, 0.78);
+  color: var(--cream-dim, rgba(244, 236, 216, 0.78));
   margin-bottom: 40rpx;
   padding: 0 12rpx;
 }

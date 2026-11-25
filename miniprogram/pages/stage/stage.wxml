@@ -1,4 +1,4 @@
-<view class="stage-page">
+<view class="page-root stage-page">
   <view class="topbar">
     <text class="topbar-brand">雪夜祝福</text>
     <view class="topbar-actions">

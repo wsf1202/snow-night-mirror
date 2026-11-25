@@ -1,4 +1,4 @@
-<view class="ambient-bg customize-page">
+<view class="page-root ambient-bg customize-page">
   <view class="inner">
     <view class="nav-back" bindtap="onBack">← 返回</view>
     <text class="title">定制礼物</text>
