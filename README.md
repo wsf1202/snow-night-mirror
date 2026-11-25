@@ -1,6 +1,6 @@
 # 🎄 雪夜祝福 · Snow Night Mirror
 
-浏览器圣诞摄像头互动：像素风手势特效 + 可定制礼物祝福链接。
+浏览器圣诞摄像头互动：本地手势特效 + 可定制礼物祝福链接。画风可切换，手势 / 指引 / 运行时共用。
 
 **🌐 在线体验：** https://wsf1202.github.io/snow-night-mirror/
 
@@ -8,6 +8,15 @@
 
 **完整复刻规格（必读）：** [`docs/RECREATE.md`](./docs/RECREATE.md)  
 **手势速查：** [`docs/GESTURES.md`](./docs/GESTURES.md)
+
+## 画风
+
+| 画风 | 打开方式 |
+|------|----------|
+| 像素雪夜（默认 / 定稿） | `/` 或落地页「像素雪夜」 |
+| 复古明信片 | `/?style=vintage` 或落地页「复古明信片」 |
+
+定制页会保留当前画风：`/customize.html?style=vintage`。
 
 ## 本地开发
 
@@ -18,7 +27,9 @@ npm run dev
 
 打开 http://127.0.0.1:5173/ （需允许摄像头）。
 
-定制页：http://127.0.0.1:5173/customize.html
+- 像素：http://127.0.0.1:5173/
+- 复古明信片：http://127.0.0.1:5173/?style=vintage
+- 定制页：http://127.0.0.1:5173/customize.html
 
 ## 构建
 

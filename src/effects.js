@@ -8,6 +8,28 @@ import {
   playTree,
 } from './audio.js'
 import { PIXEL, loadImage, drawPixelSprite } from './pixelAssets.js'
+import { VINTAGE, drawVintageSprite } from './vintageAssets.js'
+
+/** Active art pack — default pixel (kept build). */
+let ART = PIXEL
+let drawSprite = drawPixelSprite
+let scrubSprites = true
+let artStyleId = 'pixel'
+
+/** Swap Christmas art style without forking the effect state machine. */
+export function configureEffectsArt(styleId = 'pixel') {
+  artStyleId = styleId === 'vintage' ? 'vintage' : 'pixel'
+  if (artStyleId === 'vintage') {
+    ART = VINTAGE
+    drawSprite = drawVintageSprite
+    scrubSprites = false
+  } else {
+    ART = PIXEL
+    drawSprite = drawPixelSprite
+    scrubSprites = true
+  }
+  rebuildEffectMeta()
+}
 
 function rand(a, b) {
   return a + Math.random() * (b - a)
@@ -67,13 +89,19 @@ export class EffectsEngine {
   }
 
   async _loadSprites() {
-    this.sprites.hat = await loadImage(PIXEL.santaHat)
-    this.sprites.antlers = await loadImage(PIXEL.antlers)
-    this.sprites.gift = await loadImage(PIXEL.gift, { scrubMagenta: true })
-    this.sprites.giftBox = await loadImage(PIXEL.giftBox, { scrubMagenta: true })
-    this.sprites.giftLid = await loadImage(PIXEL.giftLid, { scrubMagenta: true })
-    this.sprites.bell = await loadImage(PIXEL.bell)
-    this.sprites.tree = await loadImage(PIXEL.tree, { scrubMagenta: true })
+    const scrub = scrubSprites
+    this.sprites.hat = await loadImage(ART.santaHat)
+    this.sprites.antlers = await loadImage(ART.antlers)
+    this.sprites.gift = await loadImage(ART.gift, { scrubMagenta: scrub })
+    this.sprites.giftBox = await loadImage(ART.giftBox, { scrubMagenta: scrub })
+    this.sprites.giftLid = await loadImage(ART.giftLid, { scrubMagenta: scrub })
+    this.sprites.bell = await loadImage(ART.bell)
+    this.sprites.tree = await loadImage(ART.tree, { scrubMagenta: scrub })
+  }
+
+  /** Reload sprites after art pack swap (before stage starts). */
+  async reloadArtSprites() {
+    await this._loadSprites()
   }
 
   onUnlock(fn) {
@@ -664,7 +692,7 @@ export class EffectsEngine {
     const antW = clamp(span * 2.2, 88, 180)
     const antH = antW * 0.5
     if (showAntlers && this.sprites.antlers) {
-      drawPixelSprite(ctx, this.sprites.antlers, crownX, crownY - span * 0.2, antW, antH, {
+      drawSprite(ctx, this.sprites.antlers, crownX, crownY - span * 0.2, antW, antH, {
         anchorX: 0.5,
         anchorY: 1,
         alpha: 0.96,
@@ -672,7 +700,7 @@ export class EffectsEngine {
     }
     if (showHat && this.sprites.hat) {
       // Brim horizontal; slight X bias because the tip flops right in the sprite
-      drawPixelSprite(ctx, this.sprites.hat, crownX - hatW * 0.04, crownY, hatW, hatH, {
+      drawSprite(ctx, this.sprites.hat, crownX - hatW * 0.04, crownY, hatW, hatH, {
         anchorX: 0.48,
         anchorY: 0.96,
         alpha: 0.98,
@@ -752,7 +780,7 @@ export class EffectsEngine {
     // Tree sprite (keeps its own painted star — we only add light)
     if (this.sprites.tree) {
       ctx.imageSmoothingEnabled = false
-      drawPixelSprite(ctx, this.sprites.tree, 0, 0, tw, th, {
+      drawSprite(ctx, this.sprites.tree, 0, 0, tw, th, {
         anchorX: 0.5,
         anchorY: 1,
       })
@@ -767,7 +795,7 @@ export class EffectsEngine {
     if (giftImg && !tree.hideMiniGift) {
       ctx.imageSmoothingEnabled = false
       ctx.globalAlpha = appear * (0.8 + ease * 0.2)
-      drawPixelSprite(ctx, giftImg, tw * 0.08, th * 0.01, giftW, giftH, {
+      drawSprite(ctx, giftImg, tw * 0.08, th * 0.01, giftW, giftH, {
         anchorX: 0.5,
         anchorY: 1,
       })
@@ -884,7 +912,7 @@ export class EffectsEngine {
     ctx.globalAlpha = fade
     ctx.translate(g.x, g.y)
     ctx.scale(scale, scale)
-    ctx.imageSmoothingEnabled = false
+    ctx.imageSmoothingEnabled = artStyleId === 'vintage'
 
     // Lid intentionally wider than body so open/closed read as two pieces
     const closed = this.sprites.gift
@@ -900,13 +928,13 @@ export class EffectsEngine {
     const lidRot = -progress * 0.42
 
     if (progress < 0.02 && closed) {
-      drawPixelSprite(ctx, closed, 0, boxBottom, size, closedH, {
+      drawSprite(ctx, closed, 0, boxBottom, size, closedH, {
         anchorX: 0.5,
         anchorY: 1,
       })
     } else {
       if (body) {
-        drawPixelSprite(ctx, body, 0, boxBottom, bodyW, bodyH, {
+        drawSprite(ctx, body, 0, boxBottom, bodyW, bodyH, {
           anchorX: 0.5,
           anchorY: 1,
         })
@@ -915,27 +943,33 @@ export class EffectsEngine {
       }
 
       // Blessing between lid and box — no fill / tissue inside
+      // Text is un-mirrored below (scale -1) so selfie mirror stays readable.
       if (progress > 0.18) {
         const alpha = Math.min(1, (progress - 0.18) / 0.35) * (ctx.globalAlpha || 1)
         ctx.globalAlpha = alpha
         const bw = Math.min(280, this.w * 0.65)
         const bh = g.signature ? 78 : 56
         const gapY = boxBottom - bodyH - lidLift * 0.35
-        ctx.fillStyle = 'rgba(12, 26, 18, 0.94)'
+        const vintage = artStyleId === 'vintage'
+        ctx.fillStyle = vintage ? 'rgba(243, 234, 214, 0.96)' : 'rgba(12, 26, 18, 0.94)'
         ctx.fillRect(-bw / 2, gapY - bh / 2, bw, bh)
-        ctx.strokeStyle = '#c9a227'
-        ctx.lineWidth = 3
+        ctx.strokeStyle = vintage ? '#8c3636' : '#c9a227'
+        ctx.lineWidth = vintage ? 2 : 3
         ctx.strokeRect(-bw / 2, gapY - bh / 2, bw, bh)
         ctx.save()
         ctx.scale(-1, 1)
-        ctx.fillStyle = '#f2e6d0'
-        ctx.font = '20px "ZCOOL KuaiLe", sans-serif'
+        ctx.fillStyle = vintage ? '#2f241c' : '#f2e6d0'
+        ctx.font = vintage
+          ? '600 20px "Noto Serif SC", "Cormorant Garamond", serif'
+          : '20px "ZCOOL KuaiLe", sans-serif'
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         wrapText(ctx, g.blessing, 0, gapY - (g.signature ? 10 : 0), bw - 24, 24)
         if (g.signature) {
-          ctx.fillStyle = 'rgba(201,162,39,0.95)'
-          ctx.font = '15px "ZCOOL KuaiLe", sans-serif'
+          ctx.fillStyle = vintage ? 'rgba(140,54,54,0.9)' : 'rgba(201,162,39,0.95)'
+          ctx.font = vintage
+            ? '500 15px "Noto Serif SC", "Cormorant Garamond", serif'
+            : '15px "ZCOOL KuaiLe", sans-serif'
           ctx.fillText(`— ${g.signature}`, 0, gapY + 22)
         }
         ctx.restore()
@@ -947,7 +981,7 @@ export class EffectsEngine {
       ctx.translate(0, boxBottom - bodyH * 0.88 - lidLift)
       ctx.rotate(lidRot)
       if (lid) {
-        drawPixelSprite(ctx, lid, 0, 0, lidW, lidH, {
+        drawSprite(ctx, lid, 0, 0, lidW, lidH, {
           anchorX: 0.5,
           anchorY: 0.92,
         })
@@ -1109,7 +1143,7 @@ export class EffectsEngine {
     ctx.imageSmoothingEnabled = false
     if (this.sprites.bell) {
       // Anchor at the bell loop / “头” so it sits between pinched fingers
-      drawPixelSprite(ctx, this.sprites.bell, 0, 0, size, size * 1.25, {
+      drawSprite(ctx, this.sprites.bell, 0, 0, size, size * 1.25, {
         anchorX: 0.5,
         anchorY: 0.06,
       })
@@ -1248,42 +1282,48 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   lines.forEach((ln, i) => ctx.fillText(ln, x, startY + i * lineHeight))
 }
 
-/** MediaPipe Hands gestures — pixel guides, one image each. */
-export const EFFECT_META = [
-  {
-    id: 'a1',
-    name: '飘雪祝福',
-    hint: '五指张开，雪从掌心洒出',
-    guide: PIXEL.guideSnow,
-  },
-  {
-    id: 'a3',
-    name: '圣诞铃响',
-    hint: '必须露出拇、食两个手指并捏合，其余手指收起，再左右轻摇才能触发',
-    guide: PIXEL.guideBell,
-  },
-  {
-    id: 'a7',
-    name: '圣诞帽',
-    hint: '伸出 1 根手指（食指），头上出现圣诞帽',
-    guide: PIXEL.guideHat,
-  },
-  {
-    id: 'a6',
-    name: '驯鹿鹿角',
-    hint: '伸出 2 根手指（食指+中指），头上出现鹿角',
-    guide: PIXEL.guideAntlers,
-  },
-  {
-    id: 'b8',
-    name: '圣诞树点灯',
-    hint: '伸出 3 根手指（食指+中指+无名指），树顶发光点灯',
-    guide: PIXEL.guideTree,
-  },
-  {
-    id: 'a2',
-    name: '礼物掉落',
-    hint: '双手比心：无树时礼物落到中间偏下再打开；有树时从小礼物长大到同一位置',
-    guide: PIXEL.guideGift,
-  },
-]
+/** MediaPipe Hands gestures — coach/dock cards; guides follow active art pack. */
+export let EFFECT_META = []
+
+function rebuildEffectMeta() {
+  EFFECT_META = [
+    {
+      id: 'a1',
+      name: '飘雪祝福',
+      hint: '五指张开，雪从掌心洒出',
+      guide: ART.guideSnow,
+    },
+    {
+      id: 'a3',
+      name: '圣诞铃响',
+      hint: '必须露出拇、食两个手指并捏合，其余手指收起，再左右轻摇才能触发',
+      guide: ART.guideBell,
+    },
+    {
+      id: 'a7',
+      name: '圣诞帽',
+      hint: '伸出 1 根手指（食指），头上出现圣诞帽',
+      guide: ART.guideHat,
+    },
+    {
+      id: 'a6',
+      name: '驯鹿鹿角',
+      hint: '伸出 2 根手指（食指+中指），头上出现鹿角',
+      guide: ART.guideAntlers,
+    },
+    {
+      id: 'b8',
+      name: '圣诞树点灯',
+      hint: '伸出 3 根手指（食指+中指+无名指），树顶发光点灯',
+      guide: ART.guideTree,
+    },
+    {
+      id: 'a2',
+      name: '礼物掉落',
+      hint: '双手比心：无树时礼物落到中间偏下再打开；有树时从小礼物长大到同一位置',
+      guide: ART.guideGift,
+    },
+  ]
+}
+
+rebuildEffectMeta()

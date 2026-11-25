@@ -1,6 +1,7 @@
 import './style.css'
+import './style-vintage.css'
 import { FilesetResolver, HandLandmarker, PoseLandmarker } from '@mediapipe/tasks-vision'
-import { EffectsEngine, EFFECT_META } from './effects.js'
+import { EffectsEngine, EFFECT_META, configureEffectsArt } from './effects.js'
 import { GestureDetector } from './gestures.js'
 import { readGiftConfig } from './gift.js'
 import {
@@ -12,8 +13,28 @@ import {
 import { openCamera } from './camera.js'
 import { GestureCoach, shouldStartCoach } from './coach.js'
 import { preloadPixelAssets } from './pixelAssets.js'
+import { preloadVintageAssets, VINTAGE } from './vintageAssets.js'
+import {
+  resolveArtStyle,
+  persistArtStyle,
+  styleHomeHref,
+  withStyleParam,
+} from './artStyle.js'
 
 const BASE = import.meta.env.BASE_URL
+const art = resolveArtStyle()
+persistArtStyle(art.id)
+configureEffectsArt(art.id)
+document.documentElement.classList.add(`art-${art.id}`)
+document.body?.classList.add(`art-${art.id}`)
+if (art.id === 'vintage') {
+  document.documentElement.style.setProperty(
+    '--vintage-hero',
+    `url("${VINTAGE.heroPostcard}")`,
+  )
+}
+document.title =
+  art.id === 'vintage' ? '雪夜祝福 · 复古明信片' : '雪夜祝福 · 像素圣诞镜'
 
 const WASM =
   'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/wasm'
@@ -25,14 +46,24 @@ const HAND_MODEL =
 const gift = readGiftConfig()
 loadMutePreference()
 
-const app = document.querySelector('#app')
+const customizeHref = withStyleParam(`${BASE}customize.html`, art.id)
+const assetRoot = art.assetRoot
 
-app.innerHTML = `
-  <div class="page-experience">
-    <div class="ambient-snow" id="ambientSnow" aria-hidden="true"></div>
-
-    <section class="hero" id="hero">
-      <div class="hero-sprites" aria-hidden="true">
+function heroSpritesHtml() {
+  if (art.id === 'vintage') {
+    return `
+        <img class="hs hs-stamp" src="${BASE}vintage/stamp.png?v=1" alt="" />
+        <img class="hs hs-tree" src="${BASE}vintage/tree.png?v=1" alt="" />
+        <img class="hs hs-wreath" src="${BASE}vintage/wreath.png?v=1" alt="" />
+        <img class="hs hs-gift" src="${BASE}vintage/gift.png?v=1" alt="" />
+        <img class="hs hs-bell" src="${BASE}vintage/bell.png?v=1" alt="" />
+        <img class="hs hs-hat" src="${BASE}vintage/santa-hat.png?v=1" alt="" />
+        <img class="hs hs-candle" src="${BASE}vintage/candle.png?v=1" alt="" />
+        <img class="hs hs-holly" src="${BASE}vintage/frame/deco-0.png?v=1" alt="" />
+        <img class="hs hs-pine" src="${BASE}vintage/frame/deco-2.png?v=1" alt="" />
+    `
+  }
+  return `
         <img class="hs hs-tree" src="${BASE}pixel/tree.png?v=49" alt="" />
         <img class="hs hs-gift" src="${BASE}pixel/gift.png?v=52" alt="" />
         <img class="hs hs-bell" src="${BASE}pixel/bell.png" alt="" />
@@ -41,19 +72,36 @@ app.innerHTML = `
         <img class="hs hs-cane" src="${BASE}pixel/frame/deco-0.png?v=53" alt="" />
         <img class="hs hs-holly" src="${BASE}pixel/frame/deco-1.png?v=53" alt="" />
         <img class="hs hs-pine" src="${BASE}pixel/frame/deco-7.png?v=53" alt="" />
+  `
+}
+
+const app = document.querySelector('#app')
+
+app.innerHTML = `
+  <div class="page-experience">
+    <div class="ambient-snow" id="ambientSnow" aria-hidden="true"></div>
+
+    <section class="hero" id="hero">
+      <div class="hero-sprites" aria-hidden="true">
+        ${heroSpritesHtml()}
       </div>
       <div class="hero-inner">
-        <p class="hero-pixel-tag">PIXEL SNOW NIGHT</p>
+        <p class="hero-pixel-tag">${art.tag}</p>
         <h1 class="brand">
-          雪夜祝福
-          <span class="brand-latin">Snow Night Mirror</span>
+          ${art.brand}
+          <span class="brand-latin">${art.brandLatin}</span>
         </h1>
         <p class="hero-lead">
-          像素雪夜互动镜 · 对着镜头做手势，打开专属礼物祝福。
+          ${art.lead}
         </p>
         <div class="cta-row">
           <button type="button" class="btn btn-primary" id="startBtn">开启摄像头</button>
-          <a class="btn btn-ghost" href="${BASE}customize.html">定制礼物祝福</a>
+          <a class="btn btn-ghost" href="${customizeHref}">定制礼物祝福</a>
+        </div>
+        <div class="style-picker" role="navigation" aria-label="画风切换">
+          <span class="style-picker-label">画风</span>
+          <a class="style-chip" href="${styleHomeHref('pixel', BASE)}" aria-current="${art.id === 'pixel' ? 'page' : 'false'}">像素雪夜</a>
+          <a class="style-chip" href="${styleHomeHref('vintage', BASE)}" aria-current="${art.id === 'vintage' ? 'page' : 'false'}">复古明信片</a>
         </div>
         <p class="privacy-note">画面仅在浏览器本地处理，不会上传。</p>
       </div>
@@ -61,11 +109,11 @@ app.innerHTML = `
 
     <section class="stage" id="stage">
       <div class="topbar">
-        <div class="topbar-brand">雪夜祝福</div>
+        <div class="topbar-brand">${art.brand}</div>
         <div class="topbar-actions">
           <button type="button" class="icon-btn" id="muteBtn" aria-pressed="${isMuted()}">${isMuted() ? '已静音' : '音效开'}</button>
           <button type="button" class="icon-btn" id="replayCoachBtn" hidden>再看引导</button>
-          <a class="icon-btn" href="${BASE}customize.html">定制礼物</a>
+          <a class="icon-btn" href="${customizeHref}">定制礼物</a>
         </div>
       </div>
 
@@ -157,7 +205,8 @@ function seedViewportFrame() {
       ]
         .filter(Boolean)
         .join(';')
-      return `<img class="vf-pixel" src="${BASE}pixel/frame/deco-${p.i}.png?v=53" alt="" style="${pos}" data-i="${idx}" />`
+      const decoVer = art.id === 'vintage' ? '1' : '53'
+      return `<img class="vf-pixel" src="${BASE}${assetRoot}/frame/deco-${p.i}.png?v=${decoVer}" alt="" style="${pos}" data-i="${idx}" />`
     })
     .join('')
 }
@@ -250,7 +299,9 @@ async function startExperience() {
     </div>
   `
 
-  await Promise.all([initModels(), preloadPixelAssets()])
+  const preloadArt =
+    art.id === 'vintage' ? preloadVintageAssets() : preloadPixelAssets()
+  await Promise.all([initModels(), preloadArt, effects.reloadArtSprites()])
   resizeStage()
   window.addEventListener('resize', resizeStage)
 
