@@ -77,15 +77,15 @@ function heroSpritesHtml() {
   }
   if (art.id === 'paper') {
     return `
-        <img class="hs hs-star" src="${BASE}paper/star.png?v=1" alt="" />
-        <img class="hs hs-tree" src="${BASE}paper/tree.png?v=1" alt="" />
-        <img class="hs hs-gift" src="${BASE}paper/gift.png?v=1" alt="" />
-        <img class="hs hs-bell" src="${BASE}paper/bell.png?v=1" alt="" />
-        <img class="hs hs-hat" src="${BASE}paper/santa-hat.png?v=1" alt="" />
-        <img class="hs hs-bow" src="${BASE}paper/bow.png?v=1" alt="" />
-        <img class="hs hs-ornament" src="${BASE}paper/ornament.png?v=1" alt="" />
-        <img class="hs hs-holly" src="${BASE}paper/frame/deco-0.png?v=1" alt="" />
-        <img class="hs hs-pine" src="${BASE}paper/frame/deco-2.png?v=1" alt="" />
+        <img class="hs hs-star" src="${BASE}paper/star.png?v=2" alt="" />
+        <img class="hs hs-tree" src="${BASE}paper/tree.png?v=2" alt="" />
+        <img class="hs hs-gift" src="${BASE}paper/gift.png?v=2" alt="" />
+        <img class="hs hs-bell" src="${BASE}paper/bell.png?v=2" alt="" />
+        <img class="hs hs-hat" src="${BASE}paper/santa-hat.png?v=2" alt="" />
+        <img class="hs hs-bow" src="${BASE}paper/bow.png?v=2" alt="" />
+        <img class="hs hs-ornament" src="${BASE}paper/ornament.png?v=2" alt="" />
+        <img class="hs hs-holly" src="${BASE}paper/frame/deco-0.png?v=2" alt="" />
+        <img class="hs hs-pine" src="${BASE}paper/frame/deco-2.png?v=2" alt="" />
     `
   }
   return `
@@ -231,7 +231,7 @@ function seedViewportFrame() {
       ]
         .filter(Boolean)
         .join(';')
-      const decoVer = art.id === 'pixel' ? '53' : '1'
+      const decoVer = art.id === 'pixel' ? '53' : art.id === 'paper' ? '2' : '1'
       return `<img class="vf-pixel" src="${BASE}${assetRoot}/frame/deco-${p.i}.png?v=${decoVer}" alt="" style="${pos}" data-i="${idx}" />`
     })
     .join('')

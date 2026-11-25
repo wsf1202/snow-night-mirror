@@ -1,3 +1,4 @@
+"""STUB ONLY — do not ship as production art. Use GenerateImage per skills/paper-craft-assets."""
 #!/usr/bin/env python3
 """Generate paper-craft / 纸艺立体 Christmas prop sprites (layered paper + soft shadows)."""
 
