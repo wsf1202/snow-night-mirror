@@ -21,3 +21,5 @@ export default defineConfig(({ command }) => ({
     allowedHosts: true,
   },
 }))
+
+/* solo-host publish refresh */
