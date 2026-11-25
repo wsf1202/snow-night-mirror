@@ -15,7 +15,7 @@
   "sitemapLocation": "sitemap.json",
   "permission": {
     "scope.camera": {
-      "desc": "用于本地手势互动与圣诞特效，画面不会上传"
+      "desc": "用于本地手势互动与圣诞特效，画面仅在手机本地处理，不会上传"
     }
   }
 }

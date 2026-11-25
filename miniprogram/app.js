@@ -1,20 +1,20 @@
-var config = require('./utils/config')
-var FEATURES = config.FEATURES
+var config = require('./utils/config.js')
 
 App({
   globalData: {
     gift: null,
-    features: FEATURES,
+    features: config.FEATURES
   },
 
   onLaunch: function () {
     try {
       var saved = wx.getStorageSync('snow-night-gift')
       if (saved) {
-        this.globalData.gift = typeof saved === 'string' ? JSON.parse(saved) : saved
+        this.globalData.gift =
+          typeof saved === 'string' ? JSON.parse(saved) : saved
       }
     } catch (e) {
-      // ignore corrupt storage
+      // ignore
     }
-  },
+  }
 })

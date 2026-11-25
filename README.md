@@ -29,10 +29,14 @@ npm run preview
 
 ## 微信小程序
 
-原生小程序脚手架在 [`miniprogram/`](./miniprogram/)。
+脚手架在 [`miniprogram/`](./miniprogram/)。
 
-**微信开发者工具项目目录（推荐）：** 选 `miniprogram/`（内含 `app.json` + `project.config.json`）。  
-也可选仓库根（根 `project.config.json` 的 `miniprogramRoot` → `miniprogram/`）。  
+**微信开发者工具必须导入的目录：**
+
+```text
+…/snow-night-mirror/miniprogram
+```
+
 详见 [`miniprogram/README.md`](./miniprogram/README.md)。
 
 ## 🎮 手势速查

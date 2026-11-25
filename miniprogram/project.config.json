@@ -1,5 +1,5 @@
 {
-  "description": "雪夜祝福 · 打开本目录（miniprogram/）作为小程序项目根",
+  "description": "雪夜祝福微信小程序 · 请用开发者工具直接打开本目录",
   "packOptions": {
     "ignore": [],
     "include": []
@@ -10,10 +10,10 @@
     "enhance": true,
     "postcss": true,
     "minified": true,
-    "compileHotReLoad": true,
-    "coverView": true,
     "minifyWXSS": true,
     "minifyWXML": true,
+    "compileHotReLoad": true,
+    "coverView": true,
     "uglifyFileName": false,
     "uploadWithSourceMap": true,
     "babelSetting": {

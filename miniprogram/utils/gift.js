@@ -1,22 +1,21 @@
 var BOX_STYLES = [
-  { id: 'red-gold', label: '红盒金带', ribbon: '#c9a227', box: '#9b1b1b' },
-  { id: 'green-gold', label: '绿盒金带', ribbon: '#c9a227', box: '#1f5c3a' },
-  { id: 'navy-silver', label: '深蓝银带', ribbon: '#c5cdd8', box: '#1a2744' },
-  { id: 'cream-red', label: '奶油红带', ribbon: '#9b1b1b', box: '#f2e6d0' },
+  { id: 'red-gold', label: '红盒金带', box: '#9b1b1b', ribbon: '#c9a227' },
+  { id: 'green-gold', label: '绿盒金带', box: '#1f5c3a', ribbon: '#c9a227' },
+  { id: 'navy-silver', label: '深蓝银带', box: '#1a2744', ribbon: '#c5cdd8' },
+  { id: 'cream-red', label: '奶油红带', box: '#f2e6d0', ribbon: '#9b1b1b' }
 ]
 
 var DEFAULT_GIFT = {
   blessing: '圣诞快乐！',
   signature: '',
   box: 'red-gold',
-  hint: '双手比心，打开专属礼物',
+  hint: '双手比心，打开专属礼物'
 }
 
 var MAX_BLESSING = 40
 var MAX_SIGNATURE = 20
 var STORAGE_KEY = 'snow-night-gift'
 
-/** 空值合并（不用 ES2020 空值合并运算符，避免老版 Uglify 压缩失败） */
 function coalesce(a, b) {
   return a != null ? a : b
 }
@@ -35,13 +34,13 @@ function clampSignature(text) {
     .slice(0, MAX_SIGNATURE)
 }
 
-/** 与 slice 一致按 UTF-16 码元计数 */
 function textLen(text) {
   return String(coalesce(text, '')).length
 }
 
 function resolveBox(id) {
-  for (var i = 0; i < BOX_STYLES.length; i++) {
+  var i
+  for (i = 0; i < BOX_STYLES.length; i++) {
     if (BOX_STYLES[i].id === id) return BOX_STYLES[i]
   }
   return BOX_STYLES[0]
@@ -68,16 +67,14 @@ function readGiftConfig(query) {
         box = saved.box
         hint = saved.hint
       }
-    } catch (e) {
-      // ignore
-    }
+    } catch (e) {}
   }
 
   return {
     blessing: clampBlessing(coalesce(blessing, DEFAULT_GIFT.blessing)) || DEFAULT_GIFT.blessing,
     signature: clampSignature(coalesce(signature, DEFAULT_GIFT.signature)),
     box: resolveBox(coalesce(box, DEFAULT_GIFT.box)).id,
-    hint: clampBlessing(coalesce(hint, DEFAULT_GIFT.hint)) || DEFAULT_GIFT.hint,
+    hint: clampBlessing(coalesce(hint, DEFAULT_GIFT.hint)) || DEFAULT_GIFT.hint
   }
 }
 
@@ -86,13 +83,11 @@ function persistGiftConfig(config) {
     blessing: clampBlessing(config.blessing) || DEFAULT_GIFT.blessing,
     signature: clampSignature(config.signature),
     box: resolveBox(config.box).id,
-    hint: clampBlessing(coalesce(config.hint, DEFAULT_GIFT.hint)) || DEFAULT_GIFT.hint,
+    hint: clampBlessing(coalesce(config.hint, DEFAULT_GIFT.hint)) || DEFAULT_GIFT.hint
   }
   try {
     wx.setStorageSync(STORAGE_KEY, payload)
-  } catch (e) {
-    // ignore quota
-  }
+  } catch (e) {}
   var app = getApp()
   if (app && app.globalData) {
     app.globalData.gift = payload
@@ -100,7 +95,6 @@ function persistGiftConfig(config) {
   return payload
 }
 
-/** 小程序内跳转参数（非 H5 URL） */
 function buildShareQuery(config) {
   var blessing = clampBlessing(config.blessing) || DEFAULT_GIFT.blessing
   var signature = clampSignature(config.signature)
@@ -116,12 +110,11 @@ module.exports = {
   DEFAULT_GIFT: DEFAULT_GIFT,
   MAX_BLESSING: MAX_BLESSING,
   MAX_SIGNATURE: MAX_SIGNATURE,
-  STORAGE_KEY: STORAGE_KEY,
   clampBlessing: clampBlessing,
   clampSignature: clampSignature,
   textLen: textLen,
   resolveBox: resolveBox,
   readGiftConfig: readGiftConfig,
   persistGiftConfig: persistGiftConfig,
-  buildShareQuery: buildShareQuery,
+  buildShareQuery: buildShareQuery
 }

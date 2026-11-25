@@ -1,29 +1,9 @@
-var payment = require('../../utils/payment')
-var isVirtualPaymentEnabled = payment.isVirtualPaymentEnabled
-var requestVirtualPayment = payment.requestVirtualPayment
+var payment = require('../../utils/payment.js')
 
 Page({
-  data: {
-    snowflakes: [],
-    showPayHint: true,
-  },
+  data: {},
 
-  onLoad: function () {
-    var snowflakes = []
-    for (var i = 0; i < 18; i++) {
-      snowflakes.push({
-        id: i,
-        left: Math.random() * 100,
-        dur: 8 + Math.random() * 14,
-        delay: -Math.random() * 12,
-        opacity: 0.25 + Math.random() * 0.45,
-        size: 4 + Math.random() * 8,
-      })
-    }
-    this.setData({ snowflakes: snowflakes })
-  },
-
-  onStartCamera: function () {
+  onStart: function () {
     wx.navigateTo({ url: '/pages/stage/stage' })
   },
 
@@ -31,27 +11,17 @@ Page({
     wx.navigateTo({ url: '/pages/customize/customize' })
   },
 
-  onTryPay: function () {
-    if (!isVirtualPaymentEnabled()) {
+  onShowPayHint: function () {
+    if (!payment.isVirtualPaymentEnabled()) {
       wx.showModal({
         title: '虚拟支付未开通',
-        content:
-          '个人主体需先完成小程序注册（建议工具类目），再开通虚拟支付。客户端已预留 wx.requestVirtualPayment 钩子，FEATURES.virtualPayment 当前为 false。',
-        showCancel: false,
-        confirmText: '知道了',
+        content: '个人主体需先注册小程序（建议工具类目），再开通虚拟支付。',
+        showCancel: false
       })
       return
     }
-
-    requestVirtualPayment('unlockPremiumEffects')
-      .then(function () {
-        wx.showToast({ title: '支付成功', icon: 'success' })
-      })
-      .catch(function (err) {
-        wx.showToast({
-          title: (err && err.message) || '支付未完成',
-          icon: 'none',
-        })
-      })
-  },
+    payment.requestVirtualPayment('unlockPremiumEffects').catch(function (err) {
+      wx.showToast({ title: (err && err.message) || '未完成', icon: 'none' })
+    })
+  }
 })
