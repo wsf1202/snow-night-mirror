@@ -3,7 +3,7 @@
     <text class="topbar-brand">雪夜祝福</text>
     <view class="topbar-actions">
       <button class="btn btn-mini" bindtap="onReplay" wx:if="{{freePlay}}">再看引导</button>
-      <button class="btn btn-mini" bindtap="onCustomize">定制礼物</button>
+      <button class="btn btn-mini" bindtap="onHome">回主页</button>
     </view>
   </view>
 

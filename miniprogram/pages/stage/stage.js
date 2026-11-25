@@ -170,7 +170,7 @@ Page({
     }
   },
 
-  onCustomize: function () {
-    wx.navigateTo({ url: '/pages/customize/customize' })
+  onHome: function () {
+    wx.switchTab({ url: '/pages/home/home' })
   }
 })

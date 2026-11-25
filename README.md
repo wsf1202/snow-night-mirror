@@ -29,9 +29,7 @@ npm run preview
 
 ## 微信小程序
 
-脚手架在 [`miniprogram/`](./miniprogram/)。
-
-**微信开发者工具必须导入的目录：**
+脚手架在 [`miniprogram/`](./miniprogram/)。**仅 2 个 Tab：主页 / 收到的。**
 
 ```text
 …/snow-night-mirror/miniprogram

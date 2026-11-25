@@ -1,0 +1,141 @@
+.home-page {
+  padding-bottom: 24px;
+}
+
+.ph {
+  color: rgba(244, 236, 216, 0.45);
+}
+
+.carousel {
+  height: 160px;
+  margin: 0 12px;
+  border: 2px solid #1a3d2a;
+  background-color: #05100b;
+}
+
+.slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slide-bg {
+  position: absolute;
+  right: -10px;
+  bottom: -20px;
+  width: 140px;
+  height: 160px;
+  opacity: 0.85;
+}
+
+.slide-mask {
+  position: relative;
+  z-index: 1;
+  padding: 18px 14px;
+}
+
+.slide-name {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f4ecd8;
+  text-shadow: 2px 2px 0 #1a3d2a;
+}
+
+.slide-desc {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(244, 236, 216, 0.78);
+}
+
+.slide-cta {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #e0b84a;
+}
+
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 8px;
+}
+
+.card-cell {
+  width: 25%;
+  box-sizing: border-box;
+  padding: 6px;
+  text-align: center;
+}
+
+.thumb-wrap {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 2px solid #1a3d2a;
+  background-color: rgba(20, 48, 36, 0.95);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb {
+  width: 40px;
+  height: 40px;
+}
+
+.thumb-empty {
+  border-style: dashed;
+  opacity: 0.45;
+}
+
+.card-name {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #f4ecd8;
+}
+
+.muted {
+  color: rgba(244, 236, 216, 0.4);
+}
+
+.sent-row {
+  margin: 0 12px 8px;
+  padding: 10px;
+  border: 2px solid #1a3d2a;
+  background-color: rgba(20, 48, 36, 0.65);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.sent-main {
+  flex: 1;
+  padding-right: 8px;
+}
+
+.sent-title {
+  display: block;
+  font-size: 13px;
+  color: #f2d87a;
+}
+
+.sent-blessing {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(244, 236, 216, 0.8);
+  line-height: 1.4;
+}
+
+.sent-time {
+  font-size: 10px;
+  color: rgba(244, 236, 216, 0.55);
+  white-space: nowrap;
+}
