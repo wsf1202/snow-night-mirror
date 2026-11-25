@@ -707,13 +707,27 @@ export class EffectsEngine {
     const crownX = (face.x ?? face.crownX) * this.w
     const crownY =
       (face.crownY ?? face.y - face.earSpan * 1.05) * this.h - span * 0.28
-    // Moderate size (between original and oversized)
-    const hatW = clamp(span * 1.95, 78, 168)
-    const hatH = hatW * 0.82
-    const antW = clamp(span * 2.2, 88, 180)
-    const antH = antW * 0.5
+    // Hat + antlers scale with pose head width (earSpan).
+    let hatW
+    let hatH
+    let antW
+    let antH
+    let antLift
+    if (artStyleId === 'pixel') {
+      hatW = clamp(span * 1.95, 78, 168)
+      hatH = hatW * 0.82
+      antW = clamp(span * 2.2, 88, 180)
+      antH = antW * 0.5
+      antLift = span * 0.2
+    } else {
+      hatW = clamp(span * 2.45, 110, Math.min(this.w * 0.72, 360))
+      hatH = hatW * 0.8
+      antW = clamp(span * 3.1, 140, Math.min(this.w * 0.92, 520))
+      antH = antW * 0.88
+      antLift = span * 0.12
+    }
     if (showAntlers && this.sprites.antlers) {
-      drawSprite(ctx, this.sprites.antlers, crownX, crownY - span * 0.2, antW, antH, {
+      drawSprite(ctx, this.sprites.antlers, crownX, crownY - antLift, antW, antH, {
         anchorX: 0.5,
         anchorY: 1,
         alpha: 0.96,
