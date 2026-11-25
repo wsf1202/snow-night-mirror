@@ -7,21 +7,21 @@ const BASE = import.meta.env.BASE_URL
 const N = `${BASE}neon`
 
 export const NEON = {
-  guideSnow: `${N}/guide-snow.jpg?v=2`,
-  guideGift: `${N}/guide-gift.jpg?v=2`,
-  guideBell: `${N}/guide-bell.jpg?v=2`,
-  guideAntlers: `${N}/guide-antlers.jpg?v=2`,
-  guideHat: `${N}/guide-hat.jpg?v=2`,
-  guideNext: `${N}/guide-next.jpg?v=2`,
-  guideTree: `${N}/guide-tree.jpg?v=2`,
-  santaHat: `${N}/santa-hat.png?v=2`,
-  antlers: `${N}/antlers.png?v=2`,
-  gift: `${N}/gift.png?v=2`,
-  giftBox: `${N}/gift-box.png?v=2`,
-  giftLid: `${N}/gift-lid.png?v=2`,
-  bell: `${N}/bell.png?v=2`,
-  tree: `${N}/tree.png?v=2`,
-  heroNeon: `${N}/hero-neon.jpg?v=2`,
+  guideSnow: `${N}/guide-snow.jpg?v=3`,
+  guideGift: `${N}/guide-gift.jpg?v=3`,
+  guideBell: `${N}/guide-bell.jpg?v=3`,
+  guideAntlers: `${N}/guide-antlers.jpg?v=3`,
+  guideHat: `${N}/guide-hat.jpg?v=3`,
+  guideNext: `${N}/guide-next.jpg?v=3`,
+  guideTree: `${N}/guide-tree.jpg?v=3`,
+  santaHat: `${N}/santa-hat.png?v=3`,
+  antlers: `${N}/antlers.png?v=3`,
+  gift: `${N}/gift.png?v=3`,
+  giftBox: `${N}/gift-box.png?v=3`,
+  giftLid: `${N}/gift-lid.png?v=3`,
+  bell: `${N}/bell.png?v=3`,
+  tree: `${N}/tree.png?v=3`,
+  heroNeon: `${N}/hero-neon.jpg?v=3`,
 }
 
 export async function preloadNeonAssets() {

@@ -55,8 +55,13 @@ function normalizeStyleId(raw) {
 export function resolveArtStyle(search = window.location.search) {
   const params = new URLSearchParams(search)
   const fromUrl = (params.get('style') || params.get('art') || '').toLowerCase()
-  // URL is source of truth — bare `/` stays pixel (kept build).
-  return ART_STYLES[normalizeStyleId(fromUrl)]
+  // URL is source of truth. Bare `/` stays pixel unless VITE_DEFAULT_STYLE is set (preview tunnels).
+  if (fromUrl) return ART_STYLES[normalizeStyleId(fromUrl)]
+  const envDefault = String(import.meta.env.VITE_DEFAULT_STYLE || '').toLowerCase()
+  if (envDefault && ART_STYLES[normalizeStyleId(envDefault)]) {
+    return ART_STYLES[normalizeStyleId(envDefault)]
+  }
+  return ART_STYLES.pixel
 }
 
 export function persistArtStyle(styleId) {

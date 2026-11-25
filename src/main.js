@@ -64,27 +64,27 @@ const assetRoot = art.assetRoot
 function heroSpritesHtml() {
   if (art.id === 'vintage') {
     return `
-        <img class="hs hs-stamp" src="${BASE}vintage/stamp.png?v=1" alt="" />
-        <img class="hs hs-tree" src="${BASE}vintage/tree.png?v=1" alt="" />
-        <img class="hs hs-wreath" src="${BASE}vintage/wreath.png?v=1" alt="" />
-        <img class="hs hs-gift" src="${BASE}vintage/gift.png?v=1" alt="" />
-        <img class="hs hs-bell" src="${BASE}vintage/bell.png?v=1" alt="" />
-        <img class="hs hs-hat" src="${BASE}vintage/santa-hat.png?v=1" alt="" />
-        <img class="hs hs-candle" src="${BASE}vintage/candle.png?v=1" alt="" />
-        <img class="hs hs-holly" src="${BASE}vintage/frame/deco-0.png?v=1" alt="" />
-        <img class="hs hs-pine" src="${BASE}vintage/frame/deco-2.png?v=1" alt="" />
+        <img class="hs hs-stamp" src="${BASE}vintage/stamp.png?v=3" alt="" />
+        <img class="hs hs-tree" src="${BASE}vintage/tree.png?v=3" alt="" />
+        <img class="hs hs-wreath" src="${BASE}vintage/wreath.png?v=3" alt="" />
+        <img class="hs hs-gift" src="${BASE}vintage/gift.png?v=3" alt="" />
+        <img class="hs hs-bell" src="${BASE}vintage/bell.png?v=3" alt="" />
+        <img class="hs hs-hat" src="${BASE}vintage/santa-hat.png?v=3" alt="" />
+        <img class="hs hs-candle" src="${BASE}vintage/candle.png?v=3" alt="" />
+        <img class="hs hs-holly" src="${BASE}vintage/frame/deco-0.png?v=3" alt="" />
+        <img class="hs hs-pine" src="${BASE}vintage/frame/deco-2.png?v=3" alt="" />
     `
   }
   if (art.id === 'neon') {
     return `
-        <img class="hs hs-tree" src="${BASE}neon/tree.png?v=2" alt="" />
-        <img class="hs hs-gift" src="${BASE}neon/gift.png?v=2" alt="" />
-        <img class="hs hs-bell" src="${BASE}neon/bell.png?v=2" alt="" />
-        <img class="hs hs-hat" src="${BASE}neon/santa-hat.png?v=2" alt="" />
-        <img class="hs hs-antlers" src="${BASE}neon/antlers.png?v=2" alt="" />
-        <img class="hs hs-cane" src="${BASE}neon/frame/deco-0.png?v=2" alt="" />
-        <img class="hs hs-holly" src="${BASE}neon/frame/deco-1.png?v=2" alt="" />
-        <img class="hs hs-pine" src="${BASE}neon/frame/deco-6.png?v=2" alt="" />
+        <img class="hs hs-tree" src="${BASE}neon/tree.png?v=3" alt="" />
+        <img class="hs hs-gift" src="${BASE}neon/gift.png?v=3" alt="" />
+        <img class="hs hs-bell" src="${BASE}neon/bell.png?v=3" alt="" />
+        <img class="hs hs-hat" src="${BASE}neon/santa-hat.png?v=3" alt="" />
+        <img class="hs hs-antlers" src="${BASE}neon/antlers.png?v=3" alt="" />
+        <img class="hs hs-cane" src="${BASE}neon/frame/deco-0.png?v=3" alt="" />
+        <img class="hs hs-holly" src="${BASE}neon/frame/deco-1.png?v=3" alt="" />
+        <img class="hs hs-pine" src="${BASE}neon/frame/deco-6.png?v=3" alt="" />
     `
   }
   return `
@@ -122,12 +122,16 @@ app.innerHTML = `
           <button type="button" class="btn btn-primary" id="startBtn">开启摄像头</button>
           <a class="btn btn-ghost" href="${customizeHref}">定制礼物祝福</a>
         </div>
-        <div class="style-picker" role="navigation" aria-label="画风切换">
+        ${
+          import.meta.env.VITE_DEFAULT_STYLE
+            ? ''
+            : `<div class="style-picker" role="navigation" aria-label="画风切换">
           <span class="style-picker-label">画风</span>
           <a class="style-chip" href="${styleHomeHref('pixel', BASE)}" aria-current="${art.id === 'pixel' ? 'page' : 'false'}">像素雪夜</a>
           <a class="style-chip" href="${styleHomeHref('vintage', BASE)}" aria-current="${art.id === 'vintage' ? 'page' : 'false'}">复古明信片</a>
           <a class="style-chip" href="${styleHomeHref('neon', BASE)}" aria-current="${art.id === 'neon' ? 'page' : 'false'}">霓虹</a>
-        </div>
+        </div>`
+        }
         <p class="privacy-note">画面仅在浏览器本地处理，不会上传。</p>
       </div>
     </section>
@@ -230,7 +234,7 @@ function seedViewportFrame() {
       ]
         .filter(Boolean)
         .join(';')
-      const decoVer = art.id === 'pixel' ? '53' : art.id === 'neon' ? '2' : '1'
+      const decoVer = art.id === 'pixel' ? '53' : '3'
       return `<img class="vf-pixel" src="${BASE}${assetRoot}/frame/deco-${p.i}.png?v=${decoVer}" alt="" style="${pos}" data-i="${idx}" />`
     })
     .join('')
