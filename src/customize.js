@@ -1,4 +1,6 @@
 import './style.css'
+import './style-vintage.css'
+import './style-neon.css'
 import {
   BOX_STYLES,
   MAX_BLESSING,
@@ -11,7 +13,35 @@ import {
   readGiftConfig,
   resolveBox,
 } from './gift.js'
+import {
+  resolveArtStyle,
+  persistArtStyle,
+  styleHomeHref,
+} from './artStyle.js'
+import { VINTAGE } from './vintageAssets.js'
+import { NEON } from './neonAssets.js'
 
+const BASE = import.meta.env.BASE_URL
+const art = resolveArtStyle()
+persistArtStyle(art.id)
+document.documentElement.classList.add(`art-${art.id}`)
+document.body?.classList.add(`art-${art.id}`)
+if (art.id === 'vintage') {
+  document.documentElement.style.setProperty(
+    '--vintage-hero',
+    `url("${VINTAGE.heroPostcard}")`,
+  )
+  document.title = '定制礼物 · 复古明信片'
+}
+if (art.id === 'neon') {
+  document.documentElement.style.setProperty(
+    '--neon-hero',
+    `url("${NEON.heroNeon}")`,
+  )
+  document.title = '定制礼物 · 霓虹'
+}
+
+const homeHref = styleHomeHref(art.id, BASE)
 const initial = readGiftConfig()
 
 const app = document.querySelector('#app')
@@ -19,9 +49,9 @@ const app = document.querySelector('#app')
 app.innerHTML = `
   <div class="ambient-snow" id="ambientSnow" aria-hidden="true"></div>
   <main class="page-customize">
-    <a class="nav-back" href="${BASE}">← 返回体验</a>
+    <a class="nav-back" href="${homeHref}">← 返回体验</a>
     <h1 class="customize-brand">定制礼物</h1>
-    <p class="customize-sub">写下一句祝福，生成可分享链接。朋友打开后，双手合十再分开，就能看见你的专属礼物。</p>
+    <p class="customize-sub">写下一句祝福（≤${MAX_BLESSING} 字），生成可分享链接。朋友打开后，双手比心就能看见你的专属礼物。</p>
 
     <form class="form-block" id="giftForm">
       <div class="field">
@@ -41,7 +71,7 @@ app.innerHTML = `
 
       <div class="cta-row" style="justify-content:flex-start;margin-top:0.5rem">
         <button type="submit" class="btn btn-primary">生成分享链接</button>
-        <a class="btn btn-ghost" id="previewLink" href="${BASE}">先去体验</a>
+        <a class="btn btn-ghost" id="previewLink" href="${homeHref}">先去体验</a>
       </div>
     </form>
 
@@ -56,7 +86,7 @@ app.innerHTML = `
       </p>
     </div>
 
-    <p class="footer-mini">雪夜祝福 · Phase 1 · 文案定制</p>
+    <p class="footer-mini">雪夜祝福 · ${art.label} · Phase 1 · 文案定制</p>
   </main>
 `
 
@@ -109,7 +139,7 @@ form.addEventListener('submit', (e) => {
     box: resolveBox(selectedBox).id,
   }
   persistGiftConfig(config)
-  const url = buildShareUrl(config)
+  const url = buildShareUrl(config, window.location.origin, { style: art.id })
   shareUrl.value = url
   previewLink.href = url
   shareResult.hidden = false

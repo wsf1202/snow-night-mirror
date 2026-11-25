@@ -8,6 +8,35 @@ import {
   playTree,
 } from './audio.js'
 import { PIXEL, loadImage, drawPixelSprite } from './pixelAssets.js'
+import { VINTAGE, drawVintageSprite } from './vintageAssets.js'
+import { NEON, drawNeonSprite } from './neonAssets.js'
+
+/** Active art pack — default pixel (kept build). */
+let ART = PIXEL
+let drawSprite = drawPixelSprite
+let scrubSprites = true
+let artStyleId = 'pixel'
+
+/** Swap Christmas art style without forking the effect state machine. */
+export function configureEffectsArt(styleId = 'pixel') {
+  if (styleId === 'vintage') {
+    artStyleId = 'vintage'
+    ART = VINTAGE
+    drawSprite = drawVintageSprite
+    scrubSprites = false
+  } else if (styleId === 'neon') {
+    artStyleId = 'neon'
+    ART = NEON
+    drawSprite = drawNeonSprite
+    scrubSprites = false
+  } else {
+    artStyleId = 'pixel'
+    ART = PIXEL
+    drawSprite = drawPixelSprite
+    scrubSprites = true
+  }
+  rebuildEffectMeta()
+}
 
 function rand(a, b) {
   return a + Math.random() * (b - a)
@@ -58,6 +87,8 @@ export class EffectsEngine {
       giftLid: null,
       bell: null,
       tree: null,
+      snowflake: null,
+      snowflakes: [],
     }
     /** Separate timers — only after their own gestures */
     this.hatUntil = 0
@@ -67,13 +98,24 @@ export class EffectsEngine {
   }
 
   async _loadSprites() {
-    this.sprites.hat = await loadImage(PIXEL.santaHat)
-    this.sprites.antlers = await loadImage(PIXEL.antlers)
-    this.sprites.gift = await loadImage(PIXEL.gift, { scrubMagenta: true })
-    this.sprites.giftBox = await loadImage(PIXEL.giftBox, { scrubMagenta: true })
-    this.sprites.giftLid = await loadImage(PIXEL.giftLid, { scrubMagenta: true })
-    this.sprites.bell = await loadImage(PIXEL.bell)
-    this.sprites.tree = await loadImage(PIXEL.tree, { scrubMagenta: true })
+    const scrub = scrubSprites
+    this.sprites.hat = await loadImage(ART.santaHat)
+    this.sprites.antlers = await loadImage(ART.antlers)
+    this.sprites.gift = await loadImage(ART.gift, { scrubMagenta: scrub })
+    this.sprites.giftBox = await loadImage(ART.giftBox, { scrubMagenta: scrub })
+    this.sprites.giftLid = await loadImage(ART.giftLid, { scrubMagenta: scrub })
+    this.sprites.bell = await loadImage(ART.bell)
+    this.sprites.tree = await loadImage(ART.tree, { scrubMagenta: scrub })
+    this.sprites.snowflake = ART.snowflake ? await loadImage(ART.snowflake) : null
+    const flakeSrcs = [ART.snowflake, ART.snowflakeB, ART.snowflakeC].filter(Boolean)
+    this.sprites.snowflakes = (
+      await Promise.all(flakeSrcs.map((src) => loadImage(src)))
+    ).filter(Boolean)
+  }
+
+  /** Reload sprites after art pack swap (before stage starts). */
+  async reloadArtSprites() {
+    await this._loadSprites()
   }
 
   onUnlock(fn) {
@@ -112,14 +154,17 @@ export class EffectsEngine {
     const h = this.h || 600
     const x0 = near ? near.x * w : rand(0, w)
     const y0 = near ? near.y * h : full ? rand(0, h) : rand(-40, 0)
+    // Neon: slightly softer base alpha; ≤8% get a flash pulse in draw
+    const neon = artStyleId === 'neon'
     return {
       x: near ? x0 + rand(-50, 50) : x0,
       y: near && !full ? y0 + rand(-30, 20) : y0,
-      r: rand(1.2, 3.6),
+      r: neon ? rand(1.0, 2.8) : rand(1.2, 3.6),
       vy: rand(0.45, 1.7),
       vx: rand(-0.35, 0.35),
-      a: rand(0.4, 0.95),
+      a: neon ? rand(0.28, 0.62) : rand(0.4, 0.95),
       wobble: rand(0, Math.PI * 2),
+      flash: neon && Math.random() < 0.08,
       sticky,
       born: performance.now(),
     }
@@ -617,11 +662,36 @@ export class EffectsEngine {
     if (this.fireplace) this._drawFireplace(ctx, this.fireplace, now)
     if (this.tree) this._drawTree(ctx, this.tree)
 
-    // pixel snow (square flakes)
-    for (const f of this.snow) {
-      const s = Math.max(2, Math.round(f.r * 1.6))
-      ctx.fillStyle = `rgba(255,255,255,${f.a})`
-      ctx.fillRect(Math.round(f.x), Math.round(f.y), s, s)
+    // Snow: neon uses glow snowflake sprites; other styles keep square flakes
+    const flakes = this.sprites.snowflakes?.length
+      ? this.sprites.snowflakes
+      : this.sprites.snowflake
+        ? [this.sprites.snowflake]
+        : null
+    if (artStyleId === 'neon' && flakes?.length) {
+      const t = now * 0.001
+      for (const f of this.snow) {
+        const img = flakes[Math.abs(Math.floor(f.wobble * 10)) % flakes.length]
+        // Slightly smaller than first neon v2 (was r*7.5, min 10)
+        const s = Math.max(5, Math.round(f.r * 4.2))
+        let alpha = f.a
+        if (f.flash) {
+          // Brief neon blink — only the ≤8% flash cohort
+          const pulse = 0.45 + 0.55 * Math.abs(Math.sin(t * 5.5 + f.wobble * 3))
+          alpha = Math.min(0.92, f.a * (0.75 + pulse * 0.85))
+        }
+        drawSprite(ctx, img, f.x, f.y, s, s, {
+          anchorX: 0.5,
+          anchorY: 0.5,
+          alpha,
+        })
+      }
+    } else {
+      for (const f of this.snow) {
+        const s = Math.max(2, Math.round(f.r * 1.6))
+        ctx.fillStyle = `rgba(255,255,255,${f.a})`
+        ctx.fillRect(Math.round(f.x), Math.round(f.y), s, s)
+      }
     }
 
     if (this.gift && this.gift.phase !== 'done') this._drawGift(ctx)
@@ -658,13 +728,13 @@ export class EffectsEngine {
     const crownX = (face.x ?? face.crownX) * this.w
     const crownY =
       (face.crownY ?? face.y - face.earSpan * 1.05) * this.h - span * 0.28
-    // Moderate size (between original and oversized)
+    // Same scale/position for all art styles (pixel kept-build sizing)
     const hatW = clamp(span * 1.95, 78, 168)
     const hatH = hatW * 0.82
     const antW = clamp(span * 2.2, 88, 180)
     const antH = antW * 0.5
     if (showAntlers && this.sprites.antlers) {
-      drawPixelSprite(ctx, this.sprites.antlers, crownX, crownY - span * 0.2, antW, antH, {
+      drawSprite(ctx, this.sprites.antlers, crownX, crownY - span * 0.2, antW, antH, {
         anchorX: 0.5,
         anchorY: 1,
         alpha: 0.96,
@@ -672,7 +742,7 @@ export class EffectsEngine {
     }
     if (showHat && this.sprites.hat) {
       // Brim horizontal; slight X bias because the tip flops right in the sprite
-      drawPixelSprite(ctx, this.sprites.hat, crownX - hatW * 0.04, crownY, hatW, hatH, {
+      drawSprite(ctx, this.sprites.hat, crownX - hatW * 0.04, crownY, hatW, hatH, {
         anchorX: 0.48,
         anchorY: 0.96,
         alpha: 0.98,
@@ -752,7 +822,7 @@ export class EffectsEngine {
     // Tree sprite (keeps its own painted star — we only add light)
     if (this.sprites.tree) {
       ctx.imageSmoothingEnabled = false
-      drawPixelSprite(ctx, this.sprites.tree, 0, 0, tw, th, {
+      drawSprite(ctx, this.sprites.tree, 0, 0, tw, th, {
         anchorX: 0.5,
         anchorY: 1,
       })
@@ -767,7 +837,7 @@ export class EffectsEngine {
     if (giftImg && !tree.hideMiniGift) {
       ctx.imageSmoothingEnabled = false
       ctx.globalAlpha = appear * (0.8 + ease * 0.2)
-      drawPixelSprite(ctx, giftImg, tw * 0.08, th * 0.01, giftW, giftH, {
+      drawSprite(ctx, giftImg, tw * 0.08, th * 0.01, giftW, giftH, {
         anchorX: 0.5,
         anchorY: 1,
       })
@@ -884,7 +954,7 @@ export class EffectsEngine {
     ctx.globalAlpha = fade
     ctx.translate(g.x, g.y)
     ctx.scale(scale, scale)
-    ctx.imageSmoothingEnabled = false
+    ctx.imageSmoothingEnabled = artStyleId !== 'pixel'
 
     // Lid intentionally wider than body so open/closed read as two pieces
     const closed = this.sprites.gift
@@ -900,13 +970,13 @@ export class EffectsEngine {
     const lidRot = -progress * 0.42
 
     if (progress < 0.02 && closed) {
-      drawPixelSprite(ctx, closed, 0, boxBottom, size, closedH, {
+      drawSprite(ctx, closed, 0, boxBottom, size, closedH, {
         anchorX: 0.5,
         anchorY: 1,
       })
     } else {
       if (body) {
-        drawPixelSprite(ctx, body, 0, boxBottom, bodyW, bodyH, {
+        drawSprite(ctx, body, 0, boxBottom, bodyW, bodyH, {
           anchorX: 0.5,
           anchorY: 1,
         })
@@ -915,27 +985,29 @@ export class EffectsEngine {
       }
 
       // Blessing between lid and box — no fill / tissue inside
+      // Text is un-mirrored below (scale -1) so selfie mirror stays readable.
       if (progress > 0.18) {
         const alpha = Math.min(1, (progress - 0.18) / 0.35) * (ctx.globalAlpha || 1)
         ctx.globalAlpha = alpha
         const bw = Math.min(280, this.w * 0.65)
         const bh = g.signature ? 78 : 56
         const gapY = boxBottom - bodyH - lidLift * 0.35
-        ctx.fillStyle = 'rgba(12, 26, 18, 0.94)'
+        const card = blessingCardStyle(artStyleId)
+        ctx.fillStyle = card.fill
         ctx.fillRect(-bw / 2, gapY - bh / 2, bw, bh)
-        ctx.strokeStyle = '#c9a227'
-        ctx.lineWidth = 3
+        ctx.strokeStyle = card.stroke
+        ctx.lineWidth = card.lineWidth
         ctx.strokeRect(-bw / 2, gapY - bh / 2, bw, bh)
         ctx.save()
         ctx.scale(-1, 1)
-        ctx.fillStyle = '#f2e6d0'
-        ctx.font = '20px "ZCOOL KuaiLe", sans-serif'
+        ctx.fillStyle = card.text
+        ctx.font = card.font
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         wrapText(ctx, g.blessing, 0, gapY - (g.signature ? 10 : 0), bw - 24, 24)
         if (g.signature) {
-          ctx.fillStyle = 'rgba(201,162,39,0.95)'
-          ctx.font = '15px "ZCOOL KuaiLe", sans-serif'
+          ctx.fillStyle = card.sig
+          ctx.font = card.sigFont
           ctx.fillText(`— ${g.signature}`, 0, gapY + 22)
         }
         ctx.restore()
@@ -947,7 +1019,7 @@ export class EffectsEngine {
       ctx.translate(0, boxBottom - bodyH * 0.88 - lidLift)
       ctx.rotate(lidRot)
       if (lid) {
-        drawPixelSprite(ctx, lid, 0, 0, lidW, lidH, {
+        drawSprite(ctx, lid, 0, 0, lidW, lidH, {
           anchorX: 0.5,
           anchorY: 0.92,
         })
@@ -1109,7 +1181,7 @@ export class EffectsEngine {
     ctx.imageSmoothingEnabled = false
     if (this.sprites.bell) {
       // Anchor at the bell loop / “头” so it sits between pinched fingers
-      drawPixelSprite(ctx, this.sprites.bell, 0, 0, size, size * 1.25, {
+      drawSprite(ctx, this.sprites.bell, 0, 0, size, size * 1.25, {
         anchorX: 0.5,
         anchorY: 0.06,
       })
@@ -1248,42 +1320,82 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   lines.forEach((ln, i) => ctx.fillText(ln, x, startY + i * lineHeight))
 }
 
-/** MediaPipe Hands gestures — pixel guides, one image each. */
-export const EFFECT_META = [
-  {
-    id: 'a1',
-    name: '飘雪祝福',
-    hint: '五指张开，雪从掌心洒出',
-    guide: PIXEL.guideSnow,
-  },
-  {
-    id: 'a3',
-    name: '圣诞铃响',
-    hint: '必须露出拇、食两个手指并捏合，其余手指收起，再左右轻摇才能触发',
-    guide: PIXEL.guideBell,
-  },
-  {
-    id: 'a7',
-    name: '圣诞帽',
-    hint: '伸出 1 根手指（食指），头上出现圣诞帽',
-    guide: PIXEL.guideHat,
-  },
-  {
-    id: 'a6',
-    name: '驯鹿鹿角',
-    hint: '伸出 2 根手指（食指+中指），头上出现鹿角',
-    guide: PIXEL.guideAntlers,
-  },
-  {
-    id: 'b8',
-    name: '圣诞树点灯',
-    hint: '伸出 3 根手指（食指+中指+无名指），树顶发光点灯',
-    guide: PIXEL.guideTree,
-  },
-  {
-    id: 'a2',
-    name: '礼物掉落',
-    hint: '双手比心：无树时礼物落到中间偏下再打开；有树时从小礼物长大到同一位置',
-    guide: PIXEL.guideGift,
-  },
-]
+function blessingCardStyle(styleId) {
+  if (styleId === 'vintage') {
+    return {
+      fill: 'rgba(243, 234, 214, 0.96)',
+      stroke: '#8c3636',
+      lineWidth: 2,
+      text: '#2f241c',
+      sig: 'rgba(140,54,54,0.9)',
+      font: '600 20px "Noto Serif SC", "Cormorant Garamond", serif',
+      sigFont: '500 15px "Noto Serif SC", "Cormorant Garamond", serif',
+    }
+  }
+  if (styleId === 'neon') {
+    return {
+      fill: 'rgba(5, 12, 28, 0.92)',
+      stroke: '#00f0ff',
+      lineWidth: 2,
+      text: '#e8f7ff',
+      sig: 'rgba(184,255,60,0.95)',
+      font: '600 20px "Noto Sans SC", "Orbitron", sans-serif',
+      sigFont: '500 15px "Noto Sans SC", "Orbitron", sans-serif',
+    }
+  }
+  return {
+    fill: 'rgba(12, 26, 18, 0.94)',
+    stroke: '#c9a227',
+    lineWidth: 3,
+    text: '#f2e6d0',
+    sig: 'rgba(201,162,39,0.95)',
+    font: '20px "ZCOOL KuaiLe", sans-serif',
+    sigFont: '15px "ZCOOL KuaiLe", sans-serif',
+  }
+}
+
+/** MediaPipe Hands gestures — coach/dock cards; guides follow active art pack. */
+export let EFFECT_META = []
+
+function rebuildEffectMeta() {
+  EFFECT_META = [
+    {
+      id: 'a1',
+      name: '飘雪祝福',
+      hint: '五指张开，雪从掌心洒出',
+      guide: ART.guideSnow,
+    },
+    {
+      id: 'a3',
+      name: '圣诞铃响',
+      hint: '必须露出拇、食两个手指并捏合，其余手指收起，再左右轻摇才能触发',
+      guide: ART.guideBell,
+    },
+    {
+      id: 'a7',
+      name: '圣诞帽',
+      hint: '伸出 1 根手指（食指），头上出现圣诞帽',
+      guide: ART.guideHat,
+    },
+    {
+      id: 'a6',
+      name: '驯鹿鹿角',
+      hint: '伸出 2 根手指（食指+中指），头上出现鹿角',
+      guide: ART.guideAntlers,
+    },
+    {
+      id: 'b8',
+      name: '圣诞树点灯',
+      hint: '伸出 3 根手指（食指+中指+无名指），树顶发光点灯',
+      guide: ART.guideTree,
+    },
+    {
+      id: 'a2',
+      name: '礼物掉落',
+      hint: '双手比心：无树时礼物落到中间偏下再打开；有树时从小礼物长大到同一位置',
+      guide: ART.guideGift,
+    },
+  ]
+}
+
+rebuildEffectMeta()

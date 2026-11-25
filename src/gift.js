@@ -80,9 +80,20 @@ export function buildGiftSearchParams(config) {
   return params
 }
 
-export function buildShareUrl(config, origin = window.location.origin) {
+export function buildShareUrl(
+  config,
+  origin = window.location.origin,
+  { style, basePath } = {},
+) {
   const params = buildGiftSearchParams(config)
-  return `${origin}/?${params.toString()}`
+  const styleId = style || new URLSearchParams(window.location.search).get('style')
+  if (styleId === 'vintage' || styleId === 'neon') params.set('style', styleId)
+  const base =
+    basePath != null
+      ? basePath
+      : `${import.meta.env.BASE_URL}`.replace(/\/?$/, '/')
+  const path = base.startsWith('http') ? base : `${origin}${base}`
+  return `${path}?${params.toString()}`
 }
 
 export function persistGiftConfig(config) {

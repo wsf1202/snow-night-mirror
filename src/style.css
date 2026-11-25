@@ -353,6 +353,50 @@ textarea {
   color: rgba(242, 230, 208, 0.45);
 }
 
+/* Dual art-style picker (pixel landing + vintage override) */
+.style-picker {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.style-picker-label {
+  width: 100%;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: rgba(242, 230, 208, 0.45);
+  font-family: var(--font-latin);
+}
+
+.style-chip {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  border: 2px solid rgba(242, 230, 208, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--cream);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.style-chip:hover {
+  text-decoration: none;
+  border-color: var(--gold);
+  color: var(--gold-soft);
+}
+
+.style-chip[aria-current="page"] {
+  background: var(--crimson);
+  border-color: var(--gold);
+  color: var(--cream);
+}
+
 /* —— Stage —— */
 
 .stage {
