@@ -382,11 +382,14 @@
   border-radius: 14px;
   border: 1px solid rgba(46, 77, 54, 0.2);
   background: #fffaf2;
+  color: var(--ink);
   box-shadow: 0 3px 0 rgba(48, 42, 36, 0.08);
 }
 
 .art-paper .box-pick[aria-pressed="true"] {
   border-color: var(--crimson);
+  background: rgba(178, 45, 45, 0.08);
+  color: var(--ink);
   box-shadow: 0 4px 0 rgba(140, 32, 36, 0.2);
 }
 
