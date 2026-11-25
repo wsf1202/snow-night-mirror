@@ -9,6 +9,7 @@ import {
 } from './audio.js'
 import { PIXEL, loadImage, drawPixelSprite } from './pixelAssets.js'
 import { VINTAGE, drawVintageSprite } from './vintageAssets.js'
+import { PAPER, drawPaperSprite } from './paperAssets.js'
 
 /** Active art pack — default pixel (kept build). */
 let ART = PIXEL
@@ -18,10 +19,15 @@ let artStyleId = 'pixel'
 
 /** Swap Christmas art style without forking the effect state machine. */
 export function configureEffectsArt(styleId = 'pixel') {
-  artStyleId = styleId === 'vintage' ? 'vintage' : 'pixel'
-  if (artStyleId === 'vintage') {
+  const id = styleId === 'vintage' || styleId === 'paper' ? styleId : 'pixel'
+  artStyleId = id
+  if (id === 'vintage') {
     ART = VINTAGE
     drawSprite = drawVintageSprite
+    scrubSprites = false
+  } else if (id === 'paper') {
+    ART = PAPER
+    drawSprite = drawPaperSprite
     scrubSprites = false
   } else {
     ART = PIXEL
@@ -912,7 +918,7 @@ export class EffectsEngine {
     ctx.globalAlpha = fade
     ctx.translate(g.x, g.y)
     ctx.scale(scale, scale)
-    ctx.imageSmoothingEnabled = artStyleId === 'vintage'
+    ctx.imageSmoothingEnabled = artStyleId === 'vintage' || artStyleId === 'paper'
 
     // Lid intentionally wider than body so open/closed read as two pieces
     const closed = this.sprites.gift
@@ -950,26 +956,39 @@ export class EffectsEngine {
         const bw = Math.min(280, this.w * 0.65)
         const bh = g.signature ? 78 : 56
         const gapY = boxBottom - bodyH - lidLift * 0.35
-        const vintage = artStyleId === 'vintage'
-        ctx.fillStyle = vintage ? 'rgba(243, 234, 214, 0.96)' : 'rgba(12, 26, 18, 0.94)'
+        const lightCard = artStyleId === 'vintage' || artStyleId === 'paper'
+        const paper = artStyleId === 'paper'
+        ctx.fillStyle = lightCard
+          ? paper
+            ? 'rgba(245, 239, 228, 0.97)'
+            : 'rgba(243, 234, 214, 0.96)'
+          : 'rgba(12, 26, 18, 0.94)'
         ctx.fillRect(-bw / 2, gapY - bh / 2, bw, bh)
-        ctx.strokeStyle = vintage ? '#8c3636' : '#c9a227'
-        ctx.lineWidth = vintage ? 2 : 3
+        ctx.strokeStyle = paper ? '#2e4d36' : lightCard ? '#8c3636' : '#c9a227'
+        ctx.lineWidth = lightCard ? 2 : 3
         ctx.strokeRect(-bw / 2, gapY - bh / 2, bw, bh)
         ctx.save()
         ctx.scale(-1, 1)
-        ctx.fillStyle = vintage ? '#2f241c' : '#f2e6d0'
-        ctx.font = vintage
-          ? '600 20px "Noto Serif SC", "Cormorant Garamond", serif'
-          : '20px "ZCOOL KuaiLe", sans-serif'
+        ctx.fillStyle = lightCard ? '#2a3028' : '#f2e6d0'
+        ctx.font = paper
+          ? '600 20px "ZCOOL XiaoWei", "Noto Sans SC", sans-serif'
+          : artStyleId === 'vintage'
+            ? '600 20px "Noto Serif SC", "Cormorant Garamond", serif'
+            : '20px "ZCOOL KuaiLe", sans-serif'
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         wrapText(ctx, g.blessing, 0, gapY - (g.signature ? 10 : 0), bw - 24, 24)
         if (g.signature) {
-          ctx.fillStyle = vintage ? 'rgba(140,54,54,0.9)' : 'rgba(201,162,39,0.95)'
-          ctx.font = vintage
-            ? '500 15px "Noto Serif SC", "Cormorant Garamond", serif'
-            : '15px "ZCOOL KuaiLe", sans-serif'
+          ctx.fillStyle = paper
+            ? 'rgba(178,45,45,0.92)'
+            : lightCard
+              ? 'rgba(140,54,54,0.9)'
+              : 'rgba(201,162,39,0.95)'
+          ctx.font = paper
+            ? '500 15px "Noto Sans SC", "Nunito", sans-serif'
+            : artStyleId === 'vintage'
+              ? '500 15px "Noto Serif SC", "Cormorant Garamond", serif'
+              : '15px "ZCOOL KuaiLe", sans-serif'
           ctx.fillText(`— ${g.signature}`, 0, gapY + 22)
         }
         ctx.restore()

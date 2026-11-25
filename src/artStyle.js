@@ -1,5 +1,5 @@
 /**
- * Art style resolver — theme (Christmas) × art style (pixel | vintage).
+ * Art style resolver — theme (Christmas) × art style (pixel | vintage | paper).
  * Default remains pixel so the kept build is unchanged.
  */
 
@@ -28,21 +28,40 @@ export const ART_STYLES = {
     scrubMagenta: false,
     smoothing: true,
   },
+  paper: {
+    id: 'paper',
+    label: '纸艺立体',
+    labelLatin: 'Paper Craft',
+    tag: 'PAPER CRAFT LAYERS',
+    brand: '雪夜祝福',
+    brandLatin: 'Snow Night Paper Craft',
+    lead: '纸艺立体雪夜镜 · 对着镜头做手势，翻开层叠纸上的祝福。',
+    assetRoot: 'paper',
+    scrubMagenta: false,
+    smoothing: true,
+  },
 }
 
 const STORAGE_KEY = 'snow-night-art-style'
+const KNOWN = new Set(Object.keys(ART_STYLES))
+
+function normalizeStyleId(raw) {
+  const id = String(raw || '').toLowerCase()
+  if (id === 'postcard') return 'vintage'
+  if (id === 'paper-craft' || id === 'papercraft' || id === '纸艺') return 'paper'
+  if (KNOWN.has(id)) return id
+  return 'pixel'
+}
 
 export function resolveArtStyle(search = window.location.search) {
   const params = new URLSearchParams(search)
   const fromUrl = (params.get('style') || params.get('art') || '').toLowerCase()
   // URL is source of truth — bare `/` stays pixel (kept build).
-  if (fromUrl === 'vintage' || fromUrl === 'postcard') return ART_STYLES.vintage
-  if (fromUrl === 'pixel') return ART_STYLES.pixel
-  return ART_STYLES.pixel
+  return ART_STYLES[normalizeStyleId(fromUrl)]
 }
 
 export function persistArtStyle(styleId) {
-  const id = styleId === 'vintage' ? 'vintage' : 'pixel'
+  const id = normalizeStyleId(styleId)
   try {
     localStorage.setItem(STORAGE_KEY, id)
   } catch {
@@ -53,7 +72,7 @@ export function persistArtStyle(styleId) {
 
 /** Append or replace style= in a URL / search string while keeping gift params. */
 export function withStyleParam(urlOrSearch, styleId) {
-  const id = styleId === 'vintage' ? 'vintage' : 'pixel'
+  const id = normalizeStyleId(styleId)
   let url
   try {
     url = new URL(urlOrSearch, window.location.origin)
@@ -73,6 +92,7 @@ export function withStyleParam(urlOrSearch, styleId) {
 
 export function styleHomeHref(styleId, base = import.meta.env.BASE_URL) {
   const root = base.endsWith('/') ? base : `${base}/`
-  if (styleId === 'vintage') return `${root}?style=vintage`
-  return root
+  const id = normalizeStyleId(styleId)
+  if (id === 'pixel') return root
+  return `${root}?style=${id}`
 }

@@ -15,8 +15,9 @@
 |------|----------|
 | 像素雪夜（默认 / 定稿） | `/` 或落地页「像素雪夜」 |
 | 复古明信片 | `/?style=vintage` 或落地页「复古明信片」 |
+| 纸艺立体 | `/?style=paper` 或落地页「纸艺立体」 |
 
-定制页会保留当前画风：`/customize.html?style=vintage`。
+定制页会保留当前画风：`/customize.html?style=paper`。
 
 ## 本地开发
 
@@ -29,7 +30,8 @@ npm run dev
 
 - 像素：http://127.0.0.1:5173/
 - 复古明信片：http://127.0.0.1:5173/?style=vintage
-- 定制页：http://127.0.0.1:5173/customize.html
+- 纸艺立体：http://127.0.0.1:5173/?style=paper
+- 定制页：http://127.0.0.1:5173/customize.html?style=paper
 
 ## 构建
 

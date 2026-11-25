@@ -353,7 +353,7 @@ textarea {
   color: rgba(242, 230, 208, 0.45);
 }
 
-/* Dual art-style picker (pixel landing + vintage override) */
+/* Art-style picker (pixel / vintage / paper) */
 .style-picker {
   margin-top: 1.25rem;
   display: flex;

@@ -1,5 +1,6 @@
 import './style.css'
 import './style-vintage.css'
+import './style-paper.css'
 import {
   BOX_STYLES,
   MAX_BLESSING,
@@ -18,6 +19,7 @@ import {
   styleHomeHref,
 } from './artStyle.js'
 import { VINTAGE } from './vintageAssets.js'
+import { PAPER } from './paperAssets.js'
 
 const BASE = import.meta.env.BASE_URL
 const art = resolveArtStyle()
@@ -29,8 +31,19 @@ if (art.id === 'vintage') {
     '--vintage-hero',
     `url("${VINTAGE.heroPostcard}")`,
   )
-  document.title = '定制礼物 · 复古明信片'
 }
+if (art.id === 'paper') {
+  document.documentElement.style.setProperty(
+    '--paper-hero',
+    `url("${PAPER.heroPaper}")`,
+  )
+}
+const CUSTOMIZE_TITLE = {
+  pixel: '定制礼物 · 像素雪夜',
+  vintage: '定制礼物 · 复古明信片',
+  paper: '定制礼物 · 纸艺立体',
+}
+document.title = CUSTOMIZE_TITLE[art.id] || CUSTOMIZE_TITLE.pixel
 
 const homeHref = styleHomeHref(art.id, BASE)
 const initial = readGiftConfig()

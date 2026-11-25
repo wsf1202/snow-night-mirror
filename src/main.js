@@ -1,5 +1,6 @@
 import './style.css'
 import './style-vintage.css'
+import './style-paper.css'
 import { FilesetResolver, HandLandmarker, PoseLandmarker } from '@mediapipe/tasks-vision'
 import { EffectsEngine, EFFECT_META, configureEffectsArt } from './effects.js'
 import { GestureDetector } from './gestures.js'
@@ -14,6 +15,7 @@ import { openCamera } from './camera.js'
 import { GestureCoach, shouldStartCoach } from './coach.js'
 import { preloadPixelAssets } from './pixelAssets.js'
 import { preloadVintageAssets, VINTAGE } from './vintageAssets.js'
+import { preloadPaperAssets, PAPER } from './paperAssets.js'
 import {
   resolveArtStyle,
   persistArtStyle,
@@ -33,8 +35,18 @@ if (art.id === 'vintage') {
     `url("${VINTAGE.heroPostcard}")`,
   )
 }
-document.title =
-  art.id === 'vintage' ? '雪夜祝福 · 复古明信片' : '雪夜祝福 · 像素圣诞镜'
+if (art.id === 'paper') {
+  document.documentElement.style.setProperty(
+    '--paper-hero',
+    `url("${PAPER.heroPaper}")`,
+  )
+}
+const TITLE_BY_STYLE = {
+  pixel: '雪夜祝福 · 像素圣诞镜',
+  vintage: '雪夜祝福 · 复古明信片',
+  paper: '雪夜祝福 · 纸艺立体',
+}
+document.title = TITLE_BY_STYLE[art.id] || TITLE_BY_STYLE.pixel
 
 const WASM =
   'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/wasm'
@@ -61,6 +73,19 @@ function heroSpritesHtml() {
         <img class="hs hs-candle" src="${BASE}vintage/candle.png?v=1" alt="" />
         <img class="hs hs-holly" src="${BASE}vintage/frame/deco-0.png?v=1" alt="" />
         <img class="hs hs-pine" src="${BASE}vintage/frame/deco-2.png?v=1" alt="" />
+    `
+  }
+  if (art.id === 'paper') {
+    return `
+        <img class="hs hs-star" src="${BASE}paper/star.png?v=1" alt="" />
+        <img class="hs hs-tree" src="${BASE}paper/tree.png?v=1" alt="" />
+        <img class="hs hs-gift" src="${BASE}paper/gift.png?v=1" alt="" />
+        <img class="hs hs-bell" src="${BASE}paper/bell.png?v=1" alt="" />
+        <img class="hs hs-hat" src="${BASE}paper/santa-hat.png?v=1" alt="" />
+        <img class="hs hs-bow" src="${BASE}paper/bow.png?v=1" alt="" />
+        <img class="hs hs-ornament" src="${BASE}paper/ornament.png?v=1" alt="" />
+        <img class="hs hs-holly" src="${BASE}paper/frame/deco-0.png?v=1" alt="" />
+        <img class="hs hs-pine" src="${BASE}paper/frame/deco-2.png?v=1" alt="" />
     `
   }
   return `
@@ -102,6 +127,7 @@ app.innerHTML = `
           <span class="style-picker-label">画风</span>
           <a class="style-chip" href="${styleHomeHref('pixel', BASE)}" aria-current="${art.id === 'pixel' ? 'page' : 'false'}">像素雪夜</a>
           <a class="style-chip" href="${styleHomeHref('vintage', BASE)}" aria-current="${art.id === 'vintage' ? 'page' : 'false'}">复古明信片</a>
+          <a class="style-chip" href="${styleHomeHref('paper', BASE)}" aria-current="${art.id === 'paper' ? 'page' : 'false'}">纸艺立体</a>
         </div>
         <p class="privacy-note">画面仅在浏览器本地处理，不会上传。</p>
       </div>
@@ -205,7 +231,7 @@ function seedViewportFrame() {
       ]
         .filter(Boolean)
         .join(';')
-      const decoVer = art.id === 'vintage' ? '1' : '53'
+      const decoVer = art.id === 'pixel' ? '53' : '1'
       return `<img class="vf-pixel" src="${BASE}${assetRoot}/frame/deco-${p.i}.png?v=${decoVer}" alt="" style="${pos}" data-i="${idx}" />`
     })
     .join('')
@@ -300,7 +326,11 @@ async function startExperience() {
   `
 
   const preloadArt =
-    art.id === 'vintage' ? preloadVintageAssets() : preloadPixelAssets()
+    art.id === 'vintage'
+      ? preloadVintageAssets()
+      : art.id === 'paper'
+        ? preloadPaperAssets()
+        : preloadPixelAssets()
   await Promise.all([initModels(), preloadArt, effects.reloadArtSprites()])
   resizeStage()
   window.addEventListener('resize', resizeStage)
