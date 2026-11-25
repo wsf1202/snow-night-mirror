@@ -52,15 +52,15 @@ const assetRoot = art.assetRoot
 function heroSpritesHtml() {
   if (art.id === 'vintage') {
     return `
-        <img class="hs hs-stamp" src="${BASE}vintage/stamp.png?v=2" alt="" />
-        <img class="hs hs-tree" src="${BASE}vintage/tree.png?v=2" alt="" />
-        <img class="hs hs-wreath" src="${BASE}vintage/wreath.png?v=2" alt="" />
-        <img class="hs hs-gift" src="${BASE}vintage/gift.png?v=2" alt="" />
-        <img class="hs hs-bell" src="${BASE}vintage/bell.png?v=2" alt="" />
-        <img class="hs hs-hat" src="${BASE}vintage/santa-hat.png?v=2" alt="" />
-        <img class="hs hs-candle" src="${BASE}vintage/candle.png?v=2" alt="" />
-        <img class="hs hs-holly" src="${BASE}vintage/frame/deco-0.png?v=2" alt="" />
-        <img class="hs hs-pine" src="${BASE}vintage/frame/deco-2.png?v=2" alt="" />
+        <img class="hs hs-stamp" src="${BASE}vintage/stamp.png?v=3" alt="" />
+        <img class="hs hs-tree" src="${BASE}vintage/tree.png?v=3" alt="" />
+        <img class="hs hs-wreath" src="${BASE}vintage/wreath.png?v=3" alt="" />
+        <img class="hs hs-gift" src="${BASE}vintage/gift.png?v=3" alt="" />
+        <img class="hs hs-bell" src="${BASE}vintage/bell.png?v=3" alt="" />
+        <img class="hs hs-hat" src="${BASE}vintage/santa-hat.png?v=3" alt="" />
+        <img class="hs hs-candle" src="${BASE}vintage/candle.png?v=3" alt="" />
+        <img class="hs hs-holly" src="${BASE}vintage/frame/deco-0.png?v=3" alt="" />
+        <img class="hs hs-pine" src="${BASE}vintage/frame/deco-2.png?v=3" alt="" />
     `
   }
   return `
@@ -205,7 +205,7 @@ function seedViewportFrame() {
       ]
         .filter(Boolean)
         .join(';')
-      const decoVer = art.id === 'vintage' ? '2' : '53'
+      const decoVer = art.id === 'vintage' ? '3' : '53'
       return `<img class="vf-pixel" src="${BASE}${assetRoot}/frame/deco-${p.i}.png?v=${decoVer}" alt="" style="${pos}" data-i="${idx}" />`
     })
     .join('')

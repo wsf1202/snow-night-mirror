@@ -5,7 +5,7 @@ import { loadImage } from './pixelAssets.js'
 
 const BASE = import.meta.env.BASE_URL
 const V = `${BASE}vintage`
-const VER = '2'
+const VER = '3'
 
 export const VINTAGE = {
   guideSnow: `${V}/guide-snow.jpg?v=${VER}`,
@@ -27,7 +27,7 @@ export const VINTAGE = {
   stamp: `${V}/stamp.png?v=${VER}`,
   bow: `${V}/bow.png?v=${VER}`,
   snowflake: `${V}/snowflake.png?v=${VER}`,
-  heroPostcard: `${V}/hero-postcard.jpg?v=1`,
+  heroPostcard: `${V}/hero-postcard.jpg?v=${VER}`,
 }
 
 export async function preloadVintageAssets() {
