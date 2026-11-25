@@ -77,14 +77,14 @@ function heroSpritesHtml() {
   }
   if (art.id === 'neon') {
     return `
-        <img class="hs hs-tree" src="${BASE}neon/tree.png?v=6" alt="" />
-        <img class="hs hs-gift" src="${BASE}neon/gift.png?v=6" alt="" />
-        <img class="hs hs-bell" src="${BASE}neon/bell.png?v=6" alt="" />
-        <img class="hs hs-hat" src="${BASE}neon/santa-hat.png?v=6" alt="" />
-        <img class="hs hs-antlers" src="${BASE}neon/antlers.png?v=6" alt="" />
-        <img class="hs hs-cane" src="${BASE}neon/frame/deco-0.png?v=6" alt="" />
-        <img class="hs hs-holly" src="${BASE}neon/frame/deco-1.png?v=6" alt="" />
-        <img class="hs hs-pine" src="${BASE}neon/frame/deco-6.png?v=6" alt="" />
+        <img class="hs hs-tree" src="${BASE}neon/tree.png?v=7" alt="" />
+        <img class="hs hs-gift" src="${BASE}neon/gift.png?v=7" alt="" />
+        <img class="hs hs-bell" src="${BASE}neon/bell.png?v=7" alt="" />
+        <img class="hs hs-hat" src="${BASE}neon/santa-hat.png?v=7" alt="" />
+        <img class="hs hs-antlers" src="${BASE}neon/antlers.png?v=7" alt="" />
+        <img class="hs hs-cane" src="${BASE}neon/frame/deco-0.png?v=7" alt="" />
+        <img class="hs hs-holly" src="${BASE}neon/frame/deco-1.png?v=7" alt="" />
+        <img class="hs hs-pine" src="${BASE}neon/frame/deco-6.png?v=7" alt="" />
     `
   }
   return `
