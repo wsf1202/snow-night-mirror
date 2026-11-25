@@ -154,6 +154,8 @@ export class EffectsEngine {
       wobble: rand(0, Math.PI * 2),
       rot: rand(0, Math.PI * 2),
       spin: rand(-0.02, 0.02),
+      // Neon only: ≤8% of flakes get a soft flash flag
+      neonFlash: artStyleId === 'neon' && Math.random() < 0.08,
       sticky,
       born: performance.now(),
     }
@@ -651,17 +653,23 @@ export class EffectsEngine {
     if (this.fireplace) this._drawFireplace(ctx, this.fireplace, now)
     if (this.tree) this._drawTree(ctx, this.tree)
 
-    // Pixel: square flakes. Non-pixel: style-owned snowflake.png sprites (never reuse pixel snow).
+    // Pixel: square flakes. Other styles: style-owned snowflake.png sprites.
+    // Non-pixel: slightly smaller + slightly lower opacity than early oversized draw.
     const flakeImg = this.sprites.snowflake
     const useSpriteSnow = artStyleId !== 'pixel' && flakeImg
     for (const f of this.snow) {
       if (useSpriteSnow) {
         f.rot = (f.rot || 0) + (f.spin || 0)
-        const size = Math.max(10, f.r * 7.5)
+        const size = Math.max(6, f.r * 4)
+        let alpha = f.a * 0.72
+        // Neon: at most ~8% of flakes may soft-flash; others stay steady.
+        if (artStyleId === 'neon' && f.neonFlash) {
+          alpha *= 0.7 + 0.3 * (0.5 + 0.5 * Math.sin(now * 0.012 + (f.wobble || 0)))
+        }
         ctx.save()
         ctx.translate(f.x, f.y)
         ctx.rotate(f.rot)
-        ctx.globalAlpha = f.a * 0.92
+        ctx.globalAlpha = alpha
         ctx.imageSmoothingEnabled = true
         ctx.imageSmoothingQuality = 'high'
         ctx.drawImage(flakeImg, -size / 2, -size / 2, size, size)
