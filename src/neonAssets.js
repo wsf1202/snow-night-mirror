@@ -5,7 +5,7 @@ import { loadImage } from './pixelAssets.js'
 
 const BASE = import.meta.env.BASE_URL
 const N = `${BASE}neon`
-const VER = '3'
+const VER = '5'
 const FLAKE_VER = '4'
 
 export const NEON = {

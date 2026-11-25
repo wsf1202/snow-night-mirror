@@ -717,17 +717,28 @@ export class EffectsEngine {
     const crownX = (face.x ?? face.crownX) * this.w
     const crownY =
       (face.crownY ?? face.y - face.earSpan * 1.05) * this.h - span * 0.28
-    // Moderate size (between original and oversized)
+    // Moderate size (between original and oversized); neon antlers scale larger to read on head
     const hatW = clamp(span * 1.95, 78, 168)
     const hatH = hatW * 0.82
-    const antW = clamp(span * 2.2, 88, 180)
-    const antH = antW * 0.5
+    const neonAntlers = artStyleId === 'neon'
+    const antW = neonAntlers
+      ? clamp(span * 3.6, 140, 320)
+      : clamp(span * 2.2, 88, 180)
+    const antH = neonAntlers ? antW * 0.72 : antW * 0.5
     if (showAntlers && this.sprites.antlers) {
-      drawSprite(ctx, this.sprites.antlers, crownX, crownY - span * 0.2, antW, antH, {
-        anchorX: 0.5,
-        anchorY: 1,
-        alpha: 0.96,
-      })
+      drawSprite(
+        ctx,
+        this.sprites.antlers,
+        crownX,
+        crownY - span * (neonAntlers ? 0.08 : 0.2),
+        antW,
+        antH,
+        {
+          anchorX: 0.5,
+          anchorY: 1,
+          alpha: 0.96,
+        },
+      )
     }
     if (showHat && this.sprites.hat) {
       // Brim horizontal; slight X bias because the tip flops right in the sprite
