@@ -1,0 +1,7 @@
+{
+  "description": "本地私有配置（勿提交真实密钥）。AppID 请在微信开发者工具中替换。",
+  "projectname": "snow-night-blessing",
+  "setting": {
+    "compileHotReLoad": true
+  }
+}

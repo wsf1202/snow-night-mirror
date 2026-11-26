@@ -40,6 +40,16 @@ npm run build
 npm run preview
 ```
 
+## 微信小程序
+
+脚手架在 [`miniprogram/`](./miniprogram/)。**仅 2 个 Tab：主页 / 收到的。**
+
+```text
+…/snow-night-mirror/miniprogram
+```
+
+详见 [`miniprogram/README.md`](./miniprogram/README.md)。
+
 ## 🎮 手势速查
 
 | 特效 | 手势 | 预览 |
