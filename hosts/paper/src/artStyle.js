@@ -11,7 +11,7 @@ export const ART_STYLES = {
     tag: 'PAPER CRAFT LAYERS',
     brand: '雪夜祝福',
     brandLatin: 'Snow Night Paper Craft',
-    lead: '纸艺立体雪夜镜 · 对着镜头做手势，翻开层叠纸上的祝福。',
+    lead: '对着镜头做手势，翻开层叠纸上的祝福。',
     assetRoot: 'paper',
     scrubMagenta: false,
     smoothing: true,
