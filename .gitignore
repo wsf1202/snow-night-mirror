@@ -1,3 +1,9 @@
 node_modules
 dist
 .DS_Store
+
+# Host public trees are materialized from root public/ via
+# `node scripts/sync-host-public.mjs` before host publish / local host vite.
+# Keeping them out of git avoids duplicating ~30MB+ of assets in the root
+# publish-app pack (50MB limit) while hosts/* source stays on main for repro.
+hosts/**/public/
