@@ -1,5 +1,6 @@
 import './style.css'
 import './style-vintage.css'
+import './style-paper.css'
 import './style-neon.css'
 import {
   BOX_STYLES,
@@ -19,6 +20,7 @@ import {
   styleHomeHref,
 } from './artStyle.js'
 import { VINTAGE } from './vintageAssets.js'
+import { PAPER } from './paperAssets.js'
 import { NEON } from './neonAssets.js'
 
 const BASE = import.meta.env.BASE_URL
@@ -31,15 +33,26 @@ if (art.id === 'vintage') {
     '--vintage-hero',
     `url("${VINTAGE.heroPostcard}")`,
   )
-  document.title = '定制礼物 · 复古明信片'
+}
+if (art.id === 'paper') {
+  document.documentElement.style.setProperty(
+    '--paper-hero',
+    `url("${PAPER.heroPaper}")`,
+  )
 }
 if (art.id === 'neon') {
   document.documentElement.style.setProperty(
     '--neon-hero',
     `url("${NEON.heroNeon}")`,
   )
-  document.title = '定制礼物 · 霓虹'
 }
+const CUSTOMIZE_TITLE = {
+  pixel: '定制礼物 · 像素雪夜',
+  vintage: '定制礼物 · 复古明信片',
+  paper: '定制礼物 · 纸艺立体',
+  neon: '定制礼物 · 霓虹',
+}
+document.title = CUSTOMIZE_TITLE[art.id] || CUSTOMIZE_TITLE.pixel
 
 const homeHref = styleHomeHref(art.id, BASE)
 const initial = readGiftConfig()
@@ -166,13 +179,38 @@ function updateCounts() {
 
 function seedAmbientSnow() {
   const root = document.getElementById('ambientSnow')
-  for (let i = 0; i < 22; i++) {
-    const s = document.createElement('span')
-    s.style.left = `${Math.random() * 100}%`
-    s.style.animationDuration = `${8 + Math.random() * 14}s`
-    s.style.animationDelay = `${-Math.random() * 12}s`
-    s.style.opacity = String(0.25 + Math.random() * 0.45)
-    s.style.width = s.style.height = `${2 + Math.random() * 4}px`
-    root.appendChild(s)
+  if (!root) return
+  const paperFlakes =
+    art.id === 'paper'
+      ? [
+          `${BASE}paper/snowflake.png?v=8`,
+          `${BASE}paper/snowflake-b.png?v=8`,
+          `${BASE}paper/snowflake-c.png?v=8`,
+        ]
+      : null
+  const count = paperFlakes ? 16 : 22
+  for (let i = 0; i < count; i++) {
+    if (paperFlakes) {
+      const img = document.createElement('img')
+      img.className = 'ambient-flake'
+      img.src = paperFlakes[i % paperFlakes.length]
+      img.alt = ''
+      img.style.left = `${Math.random() * 100}%`
+      img.style.animationDuration = `${10 + Math.random() * 16}s`
+      img.style.animationDelay = `${-Math.random() * 14}s`
+      img.style.opacity = String(0.18 + Math.random() * 0.28)
+      const size = `${7 + Math.random() * 11}px`
+      img.style.width = size
+      img.style.height = size
+      root.appendChild(img)
+    } else {
+      const s = document.createElement('span')
+      s.style.left = `${Math.random() * 100}%`
+      s.style.animationDuration = `${8 + Math.random() * 14}s`
+      s.style.animationDelay = `${-Math.random() * 12}s`
+      s.style.opacity = String(0.25 + Math.random() * 0.45)
+      s.style.width = s.style.height = `${2 + Math.random() * 4}px`
+      root.appendChild(s)
+    }
   }
 }

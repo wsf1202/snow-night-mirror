@@ -9,6 +9,7 @@ import {
 } from './audio.js'
 import { PIXEL, loadImage, drawPixelSprite } from './pixelAssets.js'
 import { VINTAGE, drawVintageSprite } from './vintageAssets.js'
+import { PAPER, drawPaperSprite } from './paperAssets.js'
 import { NEON, drawNeonSprite } from './neonAssets.js'
 
 /** Active art pack — default pixel (kept build). */
@@ -23,6 +24,11 @@ export function configureEffectsArt(styleId = 'pixel') {
     artStyleId = 'vintage'
     ART = VINTAGE
     drawSprite = drawVintageSprite
+    scrubSprites = false
+  } else if (styleId === 'paper') {
+    artStyleId = 'paper'
+    ART = PAPER
+    drawSprite = drawPaperSprite
     scrubSprites = false
   } else if (styleId === 'neon') {
     artStyleId = 'neon'
@@ -154,16 +160,20 @@ export class EffectsEngine {
     const h = this.h || 600
     const x0 = near ? near.x * w : rand(0, w)
     const y0 = near ? near.y * h : full ? rand(0, h) : rand(-40, 0)
-    // Neon: slightly softer base alpha; ≤8% get a flash pulse in draw
+    // Neon / paper: slightly softer base alpha; neon ≤8% get a flash pulse in draw
     const neon = artStyleId === 'neon'
+    const paper = artStyleId === 'paper'
+    const soft = neon || paper
     return {
       x: near ? x0 + rand(-50, 50) : x0,
       y: near && !full ? y0 + rand(-30, 20) : y0,
-      r: neon ? rand(1.0, 2.8) : rand(1.2, 3.6),
+      r: soft ? rand(1.0, 2.8) : rand(1.2, 3.6),
       vy: rand(0.45, 1.7),
       vx: rand(-0.35, 0.35),
-      a: neon ? rand(0.28, 0.62) : rand(0.4, 0.95),
+      a: soft ? rand(0.28, 0.62) : rand(0.4, 0.95),
       wobble: rand(0, Math.PI * 2),
+      rot: rand(0, Math.PI * 2),
+      spin: rand(-0.02, 0.02),
       flash: neon && Math.random() < 0.08,
       sticky,
       born: performance.now(),
@@ -206,9 +216,9 @@ export class EffectsEngine {
     const closedH = size * 1.2
     const boxBottom = closedH * 0.18
     const bodyH = closedH * 0.58
-    const lidLift = size * 0.82
+    const lidLift = size * (artStyleId === 'paper' ? 1.2 : 0.82)
     // Must match _drawGift gapY when progress === 1
-    const gapY = boxBottom - bodyH - lidLift * 0.35
+    const gapY = boxBottom - bodyH - lidLift * (artStyleId === 'paper' ? 0.45 : 0.35)
     return {
       x: this.w * 0.5,
       y: this.h * 0.5 - gapY,
@@ -662,29 +672,46 @@ export class EffectsEngine {
     if (this.fireplace) this._drawFireplace(ctx, this.fireplace, now)
     if (this.tree) this._drawTree(ctx, this.tree)
 
-    // Snow: neon uses glow snowflake sprites; other styles keep square flakes
+    // Pixel: square flakes. Neon/paper/vintage: style-owned snowflake sprites.
     const flakes = this.sprites.snowflakes?.length
       ? this.sprites.snowflakes
       : this.sprites.snowflake
         ? [this.sprites.snowflake]
         : null
-    if (artStyleId === 'neon' && flakes?.length) {
+    const useSpriteSnow = artStyleId !== 'pixel' && flakes?.length
+    if (useSpriteSnow) {
       const t = now * 0.001
+      const paperSnow = artStyleId === 'paper'
+      const vintageSnow = artStyleId === 'vintage'
       for (const f of this.snow) {
         const img = flakes[Math.abs(Math.floor(f.wobble * 10)) % flakes.length]
-        // Slightly smaller than first neon v2 (was r*7.5, min 10)
-        const s = Math.max(5, Math.round(f.r * 4.2))
+        // Neon / paper / vintage: smaller + softer than early oversized draws
+        const sizeMul = paperSnow || vintageSnow ? 3.4 : 4.2
+        const s = Math.max(paperSnow || vintageSnow ? 5 : 5, Math.round(f.r * sizeMul))
         let alpha = f.a
-        if (f.flash) {
+        if (paperSnow || vintageSnow) alpha *= 0.72
+        if (artStyleId === 'neon' && f.flash) {
           // Brief neon blink — only the ≤8% flash cohort
           const pulse = 0.45 + 0.55 * Math.abs(Math.sin(t * 5.5 + f.wobble * 3))
           alpha = Math.min(0.92, f.a * (0.75 + pulse * 0.85))
         }
-        drawSprite(ctx, img, f.x, f.y, s, s, {
-          anchorX: 0.5,
-          anchorY: 0.5,
-          alpha,
-        })
+        if (paperSnow || vintageSnow) {
+          f.rot = (f.rot || 0) + (f.spin || 0)
+          ctx.save()
+          ctx.translate(f.x, f.y)
+          ctx.rotate(f.rot)
+          ctx.globalAlpha = alpha
+          ctx.imageSmoothingEnabled = true
+          ctx.imageSmoothingQuality = 'high'
+          ctx.drawImage(img, -s / 2, -s / 2, s, s)
+          ctx.restore()
+        } else {
+          drawSprite(ctx, img, f.x, f.y, s, s, {
+            anchorX: 0.5,
+            anchorY: 0.5,
+            alpha,
+          })
+        }
       }
     } else {
       for (const f of this.snow) {
@@ -724,10 +751,9 @@ export class EffectsEngine {
     if (!showHat && !showAntlers) return
 
     const span = face.earSpan * this.w
-    // Prefer face midline so the hat sits centered on the head
-    const crownX = (face.x ?? face.crownX) * this.w
-    const crownY =
-      (face.crownY ?? face.y - face.earSpan * 1.05) * this.h - span * 0.28
+    // Match pixel Christmas headwear: crown anchor only (not face/nose), compact scale.
+    const crownX = (face.crownX ?? face.x) * this.w
+    const crownY = (face.crownY ?? face.y - face.earSpan * 1.05) * this.h
     // Same scale/position for all art styles (pixel kept-build sizing)
     const hatW = clamp(span * 1.95, 78, 168)
     const hatH = hatW * 0.82
@@ -741,7 +767,7 @@ export class EffectsEngine {
       })
     }
     if (showHat && this.sprites.hat) {
-      // Brim horizontal; slight X bias because the tip flops right in the sprite
+      // Brim sits on crown; slight X bias because the tip flops right in the sprite
       drawSprite(ctx, this.sprites.hat, crownX - hatW * 0.04, crownY, hatW, hatH, {
         anchorX: 0.48,
         anchorY: 0.96,
@@ -956,20 +982,37 @@ export class EffectsEngine {
     ctx.scale(scale, scale)
     ctx.imageSmoothingEnabled = artStyleId !== 'pixel'
 
-    // Lid intentionally wider than body so open/closed read as two pieces
+    // Dual-path open: SEPARATE box + lid sprites. Lid physically lifts off.
+    // Paper: always body+lid (even when closed) so orientation never jumps
+    // from a different closed sprite to mismatched open pieces.
     const closed = this.sprites.gift
     const body = this.sprites.giftBox
     const lid = this.sprites.giftLid
+    const paper = artStyleId === 'paper'
     const closedH = size * 1.2
-    const bodyW = size * 0.86
-    const lidW = size * 1.06
     const boxBottom = closedH * 0.18
-    const bodyH = closedH * 0.58
-    const lidH = closedH * 0.52
-    const lidLift = progress * size * 0.82
-    const lidRot = -progress * 0.42
 
-    if (progress < 0.02 && closed) {
+    const bodyAspect =
+      body && body.naturalWidth ? body.naturalHeight / body.naturalWidth : 0.58
+    const lidAspect =
+      lid && lid.naturalWidth ? lid.naturalHeight / lid.naturalWidth : 0.52
+    const bodyW = size * (paper ? 0.92 : 0.86)
+    const bodyH = paper
+      ? bodyW * Math.max(0.38, Math.min(0.72, bodyAspect))
+      : closedH * 0.58
+    const lidW = size * (paper ? 1.02 : 1.06)
+    const lidH = paper
+      ? lidW * Math.max(0.4, Math.min(0.75, lidAspect))
+      : closedH * 0.52
+
+    // Strong vertical lift so the gap reads as a real lid leaving the box
+    const lidLift = progress * size * (paper ? 1.2 : 0.82)
+    const lidRot = -progress * (paper ? 0.28 : 0.42)
+    const lidSlideX = paper ? progress * size * 0.06 : 0
+
+    // Paper always dual-sprite; other styles keep closed sprite until open starts
+    const useClosedSprite = !paper && progress < 0.02 && closed
+    if (useClosedSprite) {
       drawSprite(ctx, closed, 0, boxBottom, size, closedH, {
         anchorX: 0.5,
         anchorY: 1,
@@ -991,7 +1034,7 @@ export class EffectsEngine {
         ctx.globalAlpha = alpha
         const bw = Math.min(280, this.w * 0.65)
         const bh = g.signature ? 78 : 56
-        const gapY = boxBottom - bodyH - lidLift * 0.35
+        const gapY = boxBottom - bodyH - lidLift * (paper ? 0.45 : 0.35)
         const card = blessingCardStyle(artStyleId)
         ctx.fillStyle = card.fill
         ctx.fillRect(-bw / 2, gapY - bh / 2, bw, bh)
@@ -1014,14 +1057,15 @@ export class EffectsEngine {
         ctx.globalAlpha = fade
       }
 
-      // Lid wider + lifted — clear split from the box
+      // Lid rests on body top; lifts straight up as progress rises
+      const lidRestY = boxBottom - bodyH + (paper ? bodyH * 0.02 : bodyH * 0.12)
       ctx.save()
-      ctx.translate(0, boxBottom - bodyH * 0.88 - lidLift)
+      ctx.translate(lidSlideX, lidRestY - lidLift)
       ctx.rotate(lidRot)
       if (lid) {
         drawSprite(ctx, lid, 0, 0, lidW, lidH, {
           anchorX: 0.5,
-          anchorY: 0.92,
+          anchorY: paper ? 1 : 0.92,
         })
       } else {
         this._paintFrontGiftLid(ctx, 0, 0, lidW, lidH * 0.55, g.style)
@@ -1330,6 +1374,17 @@ function blessingCardStyle(styleId) {
       sig: 'rgba(140,54,54,0.9)',
       font: '600 20px "Noto Serif SC", "Cormorant Garamond", serif',
       sigFont: '500 15px "Noto Serif SC", "Cormorant Garamond", serif',
+    }
+  }
+  if (styleId === 'paper') {
+    return {
+      fill: 'rgba(245, 239, 228, 0.97)',
+      stroke: '#2e4d36',
+      lineWidth: 2,
+      text: '#2a3028',
+      sig: 'rgba(178,45,45,0.92)',
+      font: '600 20px "ZCOOL XiaoWei", "Noto Sans SC", sans-serif',
+      sigFont: '500 15px "Noto Sans SC", "Nunito", sans-serif',
     }
   }
   if (styleId === 'neon') {

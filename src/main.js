@@ -1,5 +1,6 @@
 import './style.css'
 import './style-vintage.css'
+import './style-paper.css'
 import './style-neon.css'
 import { FilesetResolver, HandLandmarker, PoseLandmarker } from '@mediapipe/tasks-vision'
 import { EffectsEngine, EFFECT_META, configureEffectsArt } from './effects.js'
@@ -15,12 +16,14 @@ import { openCamera } from './camera.js'
 import { GestureCoach, shouldStartCoach } from './coach.js'
 import { preloadPixelAssets } from './pixelAssets.js'
 import { preloadVintageAssets, VINTAGE } from './vintageAssets.js'
+import { preloadPaperAssets, PAPER } from './paperAssets.js'
 import { preloadNeonAssets, NEON } from './neonAssets.js'
 import {
   resolveArtStyle,
   persistArtStyle,
   styleHomeHref,
   withStyleParam,
+  soloStyleId,
 } from './artStyle.js'
 
 const BASE = import.meta.env.BASE_URL
@@ -35,6 +38,12 @@ if (art.id === 'vintage') {
     `url("${VINTAGE.heroPostcard}")`,
   )
 }
+if (art.id === 'paper') {
+  document.documentElement.style.setProperty(
+    '--paper-hero',
+    `url("${PAPER.heroPaper}")`,
+  )
+}
 if (art.id === 'neon') {
   document.documentElement.style.setProperty(
     '--neon-hero',
@@ -44,6 +53,7 @@ if (art.id === 'neon') {
 const TITLE_BY_STYLE = {
   pixel: '雪夜祝福 · 像素圣诞镜',
   vintage: '雪夜祝福 · 复古明信片',
+  paper: '雪夜祝福 · 纸艺立体',
   neon: '雪夜祝福 · 霓虹夜镜',
 }
 document.title = TITLE_BY_STYLE[art.id] || TITLE_BY_STYLE.pixel
@@ -64,15 +74,28 @@ const assetRoot = art.assetRoot
 function heroSpritesHtml() {
   if (art.id === 'vintage') {
     return `
-        <img class="hs hs-stamp" src="${BASE}vintage/stamp.png?v=3" alt="" />
-        <img class="hs hs-tree" src="${BASE}vintage/tree.png?v=3" alt="" />
-        <img class="hs hs-wreath" src="${BASE}vintage/wreath.png?v=3" alt="" />
-        <img class="hs hs-gift" src="${BASE}vintage/gift.png?v=3" alt="" />
-        <img class="hs hs-bell" src="${BASE}vintage/bell.png?v=3" alt="" />
-        <img class="hs hs-hat" src="${BASE}vintage/santa-hat.png?v=3" alt="" />
-        <img class="hs hs-candle" src="${BASE}vintage/candle.png?v=3" alt="" />
-        <img class="hs hs-holly" src="${BASE}vintage/frame/deco-0.png?v=3" alt="" />
-        <img class="hs hs-pine" src="${BASE}vintage/frame/deco-2.png?v=3" alt="" />
+        <img class="hs hs-stamp" src="${BASE}vintage/stamp.png?v=6" alt="" />
+        <img class="hs hs-tree" src="${BASE}vintage/tree.png?v=6" alt="" />
+        <img class="hs hs-wreath" src="${BASE}vintage/wreath.png?v=6" alt="" />
+        <img class="hs hs-gift" src="${BASE}vintage/gift.png?v=6" alt="" />
+        <img class="hs hs-bell" src="${BASE}vintage/bell.png?v=6" alt="" />
+        <img class="hs hs-hat" src="${BASE}vintage/santa-hat.png?v=6" alt="" />
+        <img class="hs hs-candle" src="${BASE}vintage/candle.png?v=6" alt="" />
+        <img class="hs hs-holly" src="${BASE}vintage/frame/deco-0.png?v=6" alt="" />
+        <img class="hs hs-pine" src="${BASE}vintage/frame/deco-2.png?v=6" alt="" />
+    `
+  }
+  if (art.id === 'paper') {
+    return `
+        <img class="hs hs-star" src="${BASE}paper/star.png?v=8" alt="" />
+        <img class="hs hs-tree" src="${BASE}paper/tree.png?v=8" alt="" />
+        <img class="hs hs-gift" src="${BASE}paper/gift.png?v=8" alt="" />
+        <img class="hs hs-bell" src="${BASE}paper/bell.png?v=8" alt="" />
+        <img class="hs hs-hat" src="${BASE}paper/santa-hat.png?v=8" alt="" />
+        <img class="hs hs-bow" src="${BASE}paper/bow.png?v=8" alt="" />
+        <img class="hs hs-ornament" src="${BASE}paper/ornament.png?v=8" alt="" />
+        <img class="hs hs-holly" src="${BASE}paper/frame/deco-0.png?v=8" alt="" />
+        <img class="hs hs-pine" src="${BASE}paper/frame/deco-2.png?v=8" alt="" />
     `
   }
   if (art.id === 'neon') {
@@ -123,12 +146,13 @@ app.innerHTML = `
           <a class="btn btn-ghost" href="${customizeHref}">定制礼物祝福</a>
         </div>
         ${
-          import.meta.env.VITE_DEFAULT_STYLE
+          soloStyleId() || import.meta.env.VITE_DEFAULT_STYLE
             ? ''
             : `<div class="style-picker" role="navigation" aria-label="画风切换">
           <span class="style-picker-label">画风</span>
           <a class="style-chip" href="${styleHomeHref('pixel', BASE)}" aria-current="${art.id === 'pixel' ? 'page' : 'false'}">像素雪夜</a>
           <a class="style-chip" href="${styleHomeHref('vintage', BASE)}" aria-current="${art.id === 'vintage' ? 'page' : 'false'}">复古明信片</a>
+          <a class="style-chip" href="${styleHomeHref('paper', BASE)}" aria-current="${art.id === 'paper' ? 'page' : 'false'}">纸艺立体</a>
           <a class="style-chip" href="${styleHomeHref('neon', BASE)}" aria-current="${art.id === 'neon' ? 'page' : 'false'}">霓虹</a>
         </div>`
         }
@@ -234,7 +258,8 @@ function seedViewportFrame() {
       ]
         .filter(Boolean)
         .join(';')
-      const decoVer = art.id === 'pixel' ? '53' : '3'
+      const decoVer =
+        art.id === 'pixel' ? '53' : art.id === 'paper' ? '8' : art.id === 'neon' ? '8' : '6'
       return `<img class="vf-pixel" src="${BASE}${assetRoot}/frame/deco-${p.i}.png?v=${decoVer}" alt="" style="${pos}" data-i="${idx}" />`
     })
     .join('')
@@ -331,9 +356,11 @@ async function startExperience() {
   const preloadArt =
     art.id === 'vintage'
       ? preloadVintageAssets()
-      : art.id === 'neon'
-        ? preloadNeonAssets()
-        : preloadPixelAssets()
+      : art.id === 'paper'
+        ? preloadPaperAssets()
+        : art.id === 'neon'
+          ? preloadNeonAssets()
+          : preloadPixelAssets()
   await Promise.all([initModels(), preloadArt, effects.reloadArtSprites()])
   resizeStage()
   window.addEventListener('resize', resizeStage)
@@ -634,6 +661,45 @@ function seedAmbientSnow() {
       s.style.width = s.style.height = `${size}px`
       s.style.backgroundImage = `url("${flakes[i % flakes.length]}")`
       root.appendChild(s)
+    }
+    return
+  }
+  if (art.id === 'paper') {
+    const paperFlakes = [
+      `${BASE}paper/snowflake.png?v=8`,
+      `${BASE}paper/snowflake-b.png?v=8`,
+      `${BASE}paper/snowflake-c.png?v=8`,
+    ]
+    for (let i = 0; i < 18; i++) {
+      const img = document.createElement('img')
+      img.className = 'ambient-flake'
+      img.src = paperFlakes[i % paperFlakes.length]
+      img.alt = ''
+      img.style.left = `${Math.random() * 100}%`
+      img.style.animationDuration = `${10 + Math.random() * 16}s`
+      img.style.animationDelay = `${-Math.random() * 14}s`
+      img.style.opacity = String(0.18 + Math.random() * 0.28)
+      const size = `${7 + Math.random() * 11}px`
+      img.style.width = size
+      img.style.height = size
+      root.appendChild(img)
+    }
+    return
+  }
+  if (art.id === 'vintage') {
+    for (let i = 0; i < 18; i++) {
+      const img = document.createElement('img')
+      img.className = 'ambient-flake'
+      img.src = `${BASE}vintage/snowflake.png?v=6`
+      img.alt = ''
+      img.style.left = `${Math.random() * 100}%`
+      img.style.animationDuration = `${10 + Math.random() * 16}s`
+      img.style.animationDelay = `${-Math.random() * 14}s`
+      img.style.opacity = String(0.2 + Math.random() * 0.3)
+      const size = `${7 + Math.random() * 11}px`
+      img.style.width = size
+      img.style.height = size
+      root.appendChild(img)
     }
     return
   }
