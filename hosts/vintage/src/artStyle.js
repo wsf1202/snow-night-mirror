@@ -11,7 +11,7 @@ export const ART_STYLES = {
     tag: 'VINTAGE POSTCARD',
     brand: '雪夜祝福',
     brandLatin: 'Snow Night Postcard',
-    lead: '复古明信片雪夜镜 · 对着镜头做手势，拆开纸上的祝福。',
+    lead: '对着镜头做手势，拆开纸上的祝福。',
     assetRoot: 'vintage',
     scrubMagenta: false,
     smoothing: true,

@@ -11,7 +11,7 @@ export const ART_STYLES = {
     tag: 'NEON SNOW NIGHT',
     brand: '雪夜祝福',
     brandLatin: 'Neon Night Mirror',
-    lead: '霓虹雪夜互动镜 · 对着镜头做手势，点亮专属礼物祝福。',
+    lead: '对着镜头做手势，点亮专属礼物祝福。',
     assetRoot: 'neon',
     scrubMagenta: false,
     smoothing: true,
