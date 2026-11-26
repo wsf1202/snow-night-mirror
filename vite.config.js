@@ -4,8 +4,10 @@ import { fileURLToPath } from 'url'
 
 const root = dirname(fileURLToPath(import.meta.url))
 
-export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/snow-night-mirror/' : '/',
+// Cursor publish-app serves at apex `/`. GitHub Pages needs a subpath — set
+// VITE_BASE=/snow-night-mirror/ in .github/workflows/deploy.yml.
+export default defineConfig(() => ({
+  base: process.env.VITE_BASE || '/',
   build: {
     rollupOptions: {
       input: {
