@@ -1,0 +1,68 @@
+<view class="page received-page">
+  <view class="search-bar">
+    <input
+      class="search-input"
+      placeholder="搜索：谁送的 / 贺卡 / 祝福"
+      placeholder-class="ph"
+      value="{{keyword}}"
+      confirm-type="search"
+      bindinput="onSearch"
+    />
+  </view>
+
+  <view class="toolbar">
+    <view
+      class="sort-chip {{sort === 'time_desc' ? 'on' : ''}}"
+      data-sort="time_desc"
+      bindtap="onSort"
+    >时间↓</view>
+    <view
+      class="sort-chip {{sort === 'time_asc' ? 'on' : ''}}"
+      data-sort="time_asc"
+      bindtap="onSort"
+    >时间↑</view>
+    <view
+      class="sort-chip {{sort === 'name_asc' ? 'on' : ''}}"
+      data-sort="name_asc"
+      bindtap="onSort"
+    >微信名 A-Z</view>
+    <view
+      class="sort-chip {{sort === 'name_desc' ? 'on' : ''}}"
+      data-sort="name_desc"
+      bindtap="onSort"
+    >微信名 Z-A</view>
+  </view>
+
+  <view class="body-row">
+    <!-- 多类型时显示左侧类型瀑布；仅 1 类时隐藏（仍保留结构供扩展） -->
+    <scroll-view wx:if="{{showTypeRail}}" class="type-rail" scroll-y="true">
+      <block wx:for="{{typeFilters}}" wx:key="id">
+        <view
+          class="type-item {{activeType === item.id ? 'on' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="onType"
+        >{{item.name}}</view>
+      </block>
+      <text class="rail-note">类型瀑布 · 多贺卡时筛选</text>
+    </scroll-view>
+
+    <view class="list-pane">
+      <block wx:if="{{list.length}}">
+        <block wx:for="{{list}}" wx:key="id">
+          <view class="recv-row" data-id="{{item.id}}" bindtap="onOpen">
+            <view class="recv-top">
+              <text class="recv-from">{{item.fromName}}</text>
+              <text class="recv-wx">@{{item.fromWx}}</text>
+            </view>
+            <text class="recv-card">{{item.cardName}}</text>
+            <text class="recv-blessing">{{item.blessing}}</text>
+            <text class="recv-time">{{item.time}}</text>
+          </view>
+        </block>
+      </block>
+      <view wx:else class="empty">没有匹配的贺卡</view>
+    </view>
+  </view>
+
+  <text class="privacy">仅展示本地 mock；正式版可同步会话元数据，画面仍本地处理。</text>
+</view>

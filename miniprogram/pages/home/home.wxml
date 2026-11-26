@@ -1,0 +1,69 @@
+<view class="page home-page">
+  <view class="search-bar">
+    <input
+      class="search-input"
+      placeholder="搜索贺卡名称 / 类型"
+      placeholder-class="ph"
+      value="{{keyword}}"
+      confirm-type="search"
+      bindinput="onSearch"
+    />
+  </view>
+
+  <!-- 顶部流动屏：一类贺卡一页；当前仅圣诞节 -->
+  <swiper
+    class="carousel"
+    indicator-dots="{{banners.length > 1}}"
+    autoplay="{{banners.length > 1}}"
+    circular="{{banners.length > 1}}"
+    interval="4000"
+  >
+    <block wx:for="{{banners}}" wx:key="id">
+      <swiper-item>
+        <view class="slide" data-id="{{item.id}}" bindtap="onOpenCard">
+          <image class="pixel slide-bg" src="{{item.banner}}" mode="aspectFit"></image>
+          <view class="slide-mask">
+            <text class="slide-name">{{item.name}}</text>
+            <text class="slide-desc">{{item.desc}}</text>
+            <text class="slide-cta">进入体验 →</text>
+          </view>
+        </view>
+      </swiper-item>
+    </block>
+  </swiper>
+
+  <text class="section-title">选贺卡</text>
+  <view class="card-grid">
+    <block wx:for="{{gridCards}}" wx:key="id">
+      <view class="card-cell" data-id="{{item.id}}" bindtap="onOpenCard">
+        <view class="thumb-wrap">
+          <image class="pixel thumb" src="{{item.thumb}}" mode="aspectFit"></image>
+        </view>
+        <text class="card-name">{{item.name}}</text>
+      </view>
+    </block>
+    <!-- 占位格：预留最多 8 格视觉 -->
+    <block wx:for="{{emptySlots}}" wx:key="*this">
+      <view class="card-cell card-cell-empty">
+        <view class="thumb-wrap thumb-empty"></view>
+        <text class="card-name muted">敬请期待</text>
+      </view>
+    </block>
+  </view>
+
+  <text class="section-title">我送给别人的贺卡</text>
+  <block wx:if="{{sentList.length}}">
+    <block wx:for="{{sentList}}" wx:key="id">
+      <view class="sent-row">
+        <view class="sent-main">
+          <text class="sent-title">送给 {{item.toName}} · {{item.cardName}}</text>
+          <text class="sent-blessing">{{item.blessing}}</text>
+        </view>
+        <text class="sent-time">{{item.time}}</text>
+      </view>
+    </block>
+  </block>
+  <view wx:else class="empty">还没有送出的贺卡</view>
+
+  <text class="privacy">贺卡互动画面仅在手机本地处理，不会上传。</text>
+</view>

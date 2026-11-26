@@ -5,27 +5,29 @@ import { loadImage } from './pixelAssets.js'
 
 const BASE = import.meta.env.BASE_URL
 const V = `${BASE}vintage`
+const VER = '6'
 
 export const VINTAGE = {
-  guideSnow: `${V}/guide-snow.jpg?v=3`,
-  guideGift: `${V}/guide-gift.jpg?v=3`,
-  guideBell: `${V}/guide-bell.jpg?v=3`,
-  guideAntlers: `${V}/guide-antlers.jpg?v=3`,
-  guideHat: `${V}/guide-hat.jpg?v=3`,
-  guideNext: `${V}/guide-next.jpg?v=3`,
-  guideTree: `${V}/guide-tree.jpg?v=3`,
-  santaHat: `${V}/santa-hat.png?v=3`,
-  antlers: `${V}/antlers.png?v=3`,
-  gift: `${V}/gift.png?v=3`,
-  giftBox: `${V}/gift-box.png?v=3`,
-  giftLid: `${V}/gift-lid.png?v=3`,
-  bell: `${V}/bell.png?v=3`,
-  tree: `${V}/tree.png?v=3`,
-  wreath: `${V}/wreath.png?v=3`,
-  candle: `${V}/candle.png?v=3`,
-  stamp: `${V}/stamp.png?v=3`,
-  bow: `${V}/bow.png?v=3`,
-  heroPostcard: `${V}/hero-postcard.jpg?v=3`,
+  guideSnow: `${V}/guide-snow.jpg?v=${VER}`,
+  guideGift: `${V}/guide-gift.jpg?v=${VER}`,
+  guideBell: `${V}/guide-bell.jpg?v=${VER}`,
+  guideAntlers: `${V}/guide-antlers.jpg?v=${VER}`,
+  guideHat: `${V}/guide-hat.jpg?v=${VER}`,
+  guideNext: `${V}/guide-next.jpg?v=${VER}`,
+  guideTree: `${V}/guide-tree.jpg?v=${VER}`,
+  santaHat: `${V}/santa-hat.png?v=${VER}`,
+  antlers: `${V}/antlers.png?v=${VER}`,
+  gift: `${V}/gift.png?v=${VER}`,
+  giftBox: `${V}/gift-box.png?v=${VER}`,
+  giftLid: `${V}/gift-lid.png?v=${VER}`,
+  bell: `${V}/bell.png?v=${VER}`,
+  tree: `${V}/tree.png?v=${VER}`,
+  wreath: `${V}/wreath.png?v=${VER}`,
+  candle: `${V}/candle.png?v=${VER}`,
+  stamp: `${V}/stamp.png?v=${VER}`,
+  bow: `${V}/bow.png?v=${VER}`,
+  snowflake: `${V}/snowflake.png?v=${VER}`,
+  heroPostcard: `${V}/hero-postcard.jpg?v=${VER}`,
 }
 
 export async function preloadVintageAssets() {

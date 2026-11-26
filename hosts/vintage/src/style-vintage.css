@@ -1,0 +1,460 @@
+/* Vintage postcard art style — aged paper, muted crimson / forest / cream.
+   Applied when <html> or <body> has class art-vintage. Pixel styles untouched. */
+
+.art-vintage {
+  --bg-deep: #e8dcc4;
+  --bg-mid: #d9c9a8;
+  --pine: #3a5640;
+  --pine-lit: #5a7a58;
+  --crimson: #8c3636;
+  --crimson-soft: #a84e48;
+  --gold: #a88a48;
+  --gold-soft: #c4a86a;
+  --cream: #f3ead6;
+  --cream-dim: rgba(72, 52, 40, 0.78);
+  --ink: #2f241c;
+  --snow: rgba(140, 54, 54, 0.08);
+  --font-brand: "Cormorant Garamond", "Noto Serif SC", "Songti SC", serif;
+  --font-body: "Noto Serif SC", "Cormorant Garamond", "Songti SC", serif;
+  --font-latin: "Cormorant Garamond", "Noto Serif SC", serif;
+  --pixel-border: 1px solid rgba(90, 60, 40, 0.35);
+  --paper: #e6d7b8;
+  --paper-stain: rgba(120, 80, 40, 0.12);
+  --postmark: rgba(140, 54, 54, 0.45);
+  color-scheme: light;
+}
+
+.art-vintage,
+.art-vintage body {
+  background: var(--bg-deep);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  image-rendering: auto;
+}
+
+.art-vintage body {
+  background:
+    radial-gradient(ellipse 70% 50% at 12% 8%, rgba(140, 54, 54, 0.08), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 88% 92%, rgba(58, 86, 64, 0.12), transparent 50%),
+    linear-gradient(165deg, #efe4cc 0%, #e2d2b0 42%, #d8c49e 100%);
+}
+
+.art-vintage .ambient-snow span {
+  border-radius: 50%;
+  background: rgba(244, 236, 214, 0.7);
+  box-shadow: none;
+  image-rendering: auto;
+  width: 3px;
+  height: 3px;
+}
+
+.art-vintage .hero {
+  background:
+    linear-gradient(105deg, rgba(232, 220, 190, 0.82) 0%, rgba(232, 220, 190, 0.55) 42%, rgba(210, 190, 150, 0.35) 100%),
+    var(--vintage-hero, none) right center / cover no-repeat;
+}
+
+.art-vintage .hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      -8deg,
+      transparent 0 2px,
+      rgba(90, 60, 40, 0.015) 2px 3px
+    ),
+    radial-gradient(ellipse 40% 30% at 20% 80%, var(--paper-stain), transparent 70%);
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+  z-index: 0;
+}
+
+.art-vintage .hero-sprites .hs {
+  image-rendering: auto;
+  filter: drop-shadow(2px 3px 4px rgba(48, 36, 28, 0.28));
+  opacity: 0.94;
+}
+
+.art-vintage .hs-tree {
+  animation: vintageFloat 5.5s ease-in-out infinite;
+}
+
+.art-vintage .hs-gift,
+.art-vintage .hs-hat,
+.art-vintage .hs-holly,
+.art-vintage .hs-antlers {
+  animation: vintageFloat 4.8s ease-in-out infinite;
+}
+
+.art-vintage .hs-bell {
+  animation: vintageSwing 3.6s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.art-vintage .hs-wreath {
+  right: -2%;
+  bottom: -6%;
+  width: min(46vw, 300px);
+  opacity: 0.9;
+  animation: vintageFloat 6s ease-in-out infinite 0.5s;
+}
+
+.art-vintage .hs-candle {
+  right: 18%;
+  bottom: 8%;
+  width: min(12vw, 72px);
+  animation: vintageGlow 2.8s ease-in-out infinite;
+}
+
+.art-vintage .hs-stamp {
+  left: 4%;
+  top: 6%;
+  width: min(18vw, 108px);
+  animation: vintageFloat 7s ease-in-out infinite;
+  opacity: 0.88;
+}
+
+@keyframes vintageFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes vintageSwing {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(8deg);
+  }
+}
+
+@keyframes vintageGlow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px rgba(224, 184, 74, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(224, 184, 74, 0.7));
+  }
+}
+
+.art-vintage .hero-inner {
+  animation: vintageRise 1.1s ease-out both;
+  background: rgba(243, 234, 214, 0.55);
+  backdrop-filter: blur(2px);
+  padding: 1.75rem 1.5rem 1.5rem;
+  border: 1px solid rgba(90, 60, 40, 0.22);
+  box-shadow:
+    0 1px 0 rgba(255, 248, 230, 0.5) inset,
+    4px 8px 24px rgba(48, 36, 28, 0.12);
+  max-width: 34rem;
+}
+
+@keyframes vintageRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.art-vintage .hero-pixel-tag {
+  font-family: var(--font-latin);
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  color: var(--crimson);
+  text-shadow: none;
+  font-style: italic;
+}
+
+.art-vintage .brand {
+  font-family: var(--font-brand);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 9vw, 4.2rem);
+  color: var(--ink);
+  text-shadow: 0 1px 0 rgba(255, 248, 230, 0.55);
+  letter-spacing: 0.08em;
+}
+
+.art-vintage .brand-latin {
+  font-family: var(--font-latin);
+  font-style: italic;
+  font-size: 0.28em;
+  letter-spacing: 0.2em;
+  color: var(--crimson);
+  text-transform: none;
+  text-shadow: none;
+}
+
+.art-vintage .hero-lead {
+  color: rgba(72, 52, 40, 0.82);
+  text-shadow: none;
+  font-size: clamp(1rem, 2.4vw, 1.15rem);
+}
+
+.art-vintage .btn {
+  border-radius: 2px;
+  border: 1px solid rgba(90, 60, 40, 0.45);
+  box-shadow: 2px 3px 0 rgba(48, 36, 28, 0.18);
+  letter-spacing: 0.06em;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.art-vintage .btn-primary {
+  background: var(--crimson);
+  color: var(--cream);
+  border-color: rgba(90, 40, 30, 0.55);
+  box-shadow: 2px 3px 0 rgba(80, 30, 28, 0.35);
+}
+
+.art-vintage .btn-primary:hover {
+  background: var(--crimson-soft);
+  box-shadow: 3px 4px 0 rgba(80, 30, 28, 0.35);
+}
+
+.art-vintage .btn-ghost {
+  background: rgba(243, 234, 214, 0.55);
+  color: var(--ink);
+  border-color: rgba(90, 60, 40, 0.35);
+}
+
+.art-vintage .btn-ghost:hover {
+  border-color: var(--crimson);
+  color: var(--crimson);
+}
+
+.art-vintage .privacy-note {
+  color: rgba(72, 52, 40, 0.55);
+}
+
+.art-vintage .style-picker {
+  margin-top: 1.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.art-vintage .style-picker-label,
+.style-picker-label {
+  width: 100%;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: rgba(72, 52, 40, 0.55);
+  margin-bottom: 0.15rem;
+}
+
+.art-vintage .style-chip,
+.style-chip {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid rgba(90, 60, 40, 0.35);
+  background: rgba(243, 234, 214, 0.7);
+  color: var(--ink, #2f241c);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.art-vintage .style-chip:hover,
+.style-chip:hover {
+  text-decoration: none;
+  border-color: var(--crimson, #8c3636);
+}
+
+.art-vintage .style-chip[aria-current="page"],
+.style-chip[aria-current="page"] {
+  background: var(--crimson, #8c3636);
+  color: var(--cream, #f3ead6);
+  border-color: transparent;
+}
+
+.art-vintage .topbar-brand {
+  font-family: var(--font-brand);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.art-vintage .icon-btn {
+  border-radius: 2px;
+  background: rgba(243, 234, 214, 0.75);
+  border: 1px solid rgba(90, 60, 40, 0.28);
+  color: var(--ink);
+}
+
+.art-vintage .viewport {
+  border: 1px solid rgba(90, 60, 40, 0.35);
+  box-shadow:
+    0 0 0 6px rgba(243, 234, 214, 0.65),
+    0 12px 28px rgba(48, 36, 28, 0.18);
+  background: #1a1410;
+}
+
+.art-vintage .vf-pixel {
+  image-rendering: auto;
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.25));
+}
+
+.art-vintage .effects-dock .effect-chip {
+  border-radius: 2px;
+  border: 1px solid rgba(90, 60, 40, 0.3);
+  background: rgba(243, 234, 214, 0.88);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.art-vintage .effects-dock .effect-chip.on {
+  border-color: var(--crimson);
+  background: rgba(140, 54, 54, 0.12);
+}
+
+.art-vintage .effects-dock .effect-chip.current {
+  outline: 2px solid var(--gold);
+}
+
+.art-vintage .dock-popover {
+  background: var(--cream);
+  border: 1px solid rgba(90, 60, 40, 0.35);
+  color: var(--ink);
+  border-radius: 2px;
+  box-shadow: 4px 8px 20px rgba(48, 36, 28, 0.18);
+}
+
+.art-vintage .coach-panel,
+.art-vintage .pixel-panel {
+  background: rgba(243, 234, 214, 0.94);
+  border: 1px solid rgba(90, 60, 40, 0.35);
+  color: var(--ink);
+  border-radius: 2px;
+  box-shadow: 3px 6px 16px rgba(48, 36, 28, 0.16);
+}
+
+.art-vintage .hint-banner {
+  background: rgba(243, 234, 214, 0.9);
+  color: var(--ink);
+  border: 1px solid rgba(90, 60, 40, 0.28);
+  border-radius: 2px;
+}
+
+.art-vintage .status-toast {
+  background: rgba(48, 36, 28, 0.82);
+  color: var(--cream);
+  border-radius: 2px;
+}
+
+.art-vintage .page-customize {
+  color: var(--ink);
+}
+
+.art-vintage .customize-brand {
+  font-family: var(--font-brand);
+  color: var(--ink);
+}
+
+.art-vintage .customize-sub {
+  color: rgba(72, 52, 40, 0.78);
+}
+
+.art-vintage .nav-back {
+  color: var(--crimson);
+}
+
+.art-vintage .form-block,
+.art-vintage .share-result {
+  background: rgba(243, 234, 214, 0.82);
+  border: 1px solid rgba(90, 60, 40, 0.28);
+  border-radius: 2px;
+  box-shadow: 3px 6px 16px rgba(48, 36, 28, 0.1);
+  padding: 1.25rem 1.15rem;
+}
+
+.art-vintage .field label,
+.art-vintage .share-result label {
+  color: var(--ink);
+}
+
+.art-vintage .field .meta {
+  color: rgba(72, 52, 40, 0.55);
+}
+
+.art-vintage textarea,
+.art-vintage input,
+.art-vintage .field input,
+.art-vintage .field textarea,
+.art-vintage .share-row input {
+  background: rgba(255, 250, 235, 0.95);
+  border: 1px solid rgba(90, 60, 40, 0.35);
+  color: var(--ink);
+  border-radius: 2px;
+}
+
+.art-vintage .field input::placeholder,
+.art-vintage .field textarea::placeholder {
+  color: rgba(72, 52, 40, 0.45);
+}
+
+.art-vintage .box-pick {
+  border-radius: 2px;
+  border: 1px solid rgba(90, 60, 40, 0.28);
+  background: rgba(255, 250, 235, 0.9);
+  color: var(--ink);
+}
+
+.art-vintage .box-pick[aria-pressed="true"] {
+  border-color: var(--crimson);
+  background: rgba(140, 54, 54, 0.08);
+  box-shadow: 0 0 0 2px rgba(140, 54, 54, 0.2);
+}
+
+.art-vintage .footer-mini {
+  color: rgba(72, 52, 40, 0.5);
+}
+
+.art-vintage .style-picker-label {
+  color: rgba(72, 52, 40, 0.55);
+  font-family: var(--font-latin);
+  font-style: italic;
+}
+
+.art-vintage .postmark-deco {
+  position: absolute;
+  width: 88px;
+  height: 88px;
+  border: 2px solid var(--postmark);
+  border-radius: 50%;
+  opacity: 0.55;
+  pointer-events: none;
+  transform: rotate(-18deg);
+}
+
+.art-vintage .postmark-deco::after {
+  content: "SNOW · NIGHT";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-latin);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  color: var(--postmark);
+}

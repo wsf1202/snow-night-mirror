@@ -15,9 +15,12 @@
 |------|----------|
 | 像素雪夜（默认 / 定稿） | `/` 或落地页「像素雪夜」 |
 | 复古明信片 | `/?style=vintage` 或落地页「复古明信片」 |
+| 纸艺立体 | `/?style=paper` 或落地页「纸艺立体」 |
 | 霓虹 | `/?style=neon` 或落地页「霓虹」 |
 
-定制页会保留当前画风：`/customize.html?style=vintage` · `/customize.html?style=neon`。
+定制页会保留当前画风：`/customize.html?style=vintage` · `paper` · `neon`。
+
+**独立发布宿主（一风格一站）：** [`hosts/`](./hosts/README.md) — `hosts/vintage` · `hosts/paper` · `hosts/neon`。
 
 ## 本地开发
 
@@ -30,6 +33,7 @@ npm run dev
 
 - 像素：http://127.0.0.1:5173/
 - 复古明信片：http://127.0.0.1:5173/?style=vintage
+- 纸艺立体：http://127.0.0.1:5173/?style=paper
 - 霓虹：http://127.0.0.1:5173/?style=neon
 - 定制页：http://127.0.0.1:5173/customize.html
 
@@ -39,6 +43,16 @@ npm run dev
 npm run build
 npm run preview
 ```
+
+## 微信小程序
+
+脚手架在 [`miniprogram/`](./miniprogram/)。**仅 2 个 Tab：主页 / 收到的。**
+
+```text
+…/snow-night-mirror/miniprogram
+```
+
+详见 [`miniprogram/README.md`](./miniprogram/README.md)。
 
 ## 🎮 手势速查
 

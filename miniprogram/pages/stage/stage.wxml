@@ -1,0 +1,79 @@
+<view class="page stage-page">
+  <view class="topbar">
+    <text class="topbar-brand">雪夜祝福</text>
+    <view class="topbar-actions">
+      <button class="btn btn-mini" bindtap="onReplay" wx:if="{{freePlay}}">再看引导</button>
+      <button class="btn btn-mini" bindtap="onHome">回主页</button>
+    </view>
+  </view>
+
+  <view class="viewport">
+    <camera
+      wx:if="{{cameraOn}}"
+      class="cam"
+      device-position="front"
+      flash="off"
+      resolution="medium"
+      binderror="onCameraError"
+      bindinitdone="onCameraReady"
+    ></camera>
+    <view wx:else class="cam-placeholder">
+      <text>等待摄像头授权…</text>
+    </view>
+
+    <view class="coach" wx:if="{{coachActive}}">
+      <text class="coach-progress">手势练习 {{coachIndex + 1}} / {{effects.length}}</text>
+      <image class="pixel coach-guide" src="{{currentEffect.guide}}" mode="aspectFit"></image>
+      <text class="coach-title">{{currentEffect.name}}</text>
+      <text class="coach-hint">{{coachHint}}</text>
+      <text class="coach-status">{{coachStatus}}</text>
+      <view class="coach-row">
+        <button class="btn btn-mini btn-ghost" bindtap="onPrev" disabled="{{coachIndex === 0}}">上一步</button>
+        <button class="btn btn-mini btn-ghost" bindtap="onSkipStep">跳过该动作</button>
+      </view>
+      <button class="btn" bindtap="onNext">下一步</button>
+      <button class="btn btn-ghost" bindtap="onSkipAll">跳过指引</button>
+    </view>
+
+    <view class="free-banner" wx:if="{{freePlay}}">
+      <text>自由体验</text>
+    </view>
+
+    <view class="loading" wx:if="{{loading}}">
+      <text>正在唤醒摄像头…</text>
+      <text class="loading-sub">手势引擎 v1 为 stub，可用「下一步」完成指引</text>
+    </view>
+
+    <view class="toast" wx:if="{{toast}}">{{toast}}</view>
+  </view>
+
+  <scroll-view class="dock" scroll-x="true">
+    <view
+      wx:for="{{effects}}"
+      wx:key="id"
+      class="dock-item {{highlightId === item.id ? 'on' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="onDockTap"
+    >
+      <text>{{item.name}}</text>
+    </view>
+  </scroll-view>
+
+  <view class="dock-hint" wx:if="{{dockHint}}">
+    <text class="dock-hint-title">{{dockHint.name}}</text>
+    <text class="dock-hint-body">{{dockHint.hint}}</text>
+  </view>
+
+  <view class="dev" wx:if="{{showDevBar}}">
+    <text class="dev-label">开发：手动触发（gesture stub）</text>
+    <view>
+      <button
+        wx:for="{{effects}}"
+        wx:key="id"
+        class="btn btn-mini"
+        data-id="{{item.id}}"
+        bindtap="onDebug"
+      >{{item.name}}</button>
+    </view>
+  </view>
+</view>
