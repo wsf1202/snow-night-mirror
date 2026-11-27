@@ -68,13 +68,13 @@ export function loadImage(src, { scrubMagenta = false } = {}) {
 const BASE = import.meta.env.BASE_URL
 
 export const PIXEL = {
-  guideSnow: `${BASE}pixel/guide-snow.jpg?v=51`,
-  guideGift: `${BASE}pixel/guide-gift.jpg?v=51`,
-  guideBell: `${BASE}pixel/guide-bell.jpg?v=51`,
-  guideAntlers: `${BASE}pixel/guide-antlers.jpg?v=51`,
-  guideHat: `${BASE}pixel/guide-hat.jpg?v=51`,
-  guideNext: `${BASE}pixel/guide-next.jpg?v=51`,
-  guideTree: `${BASE}pixel/guide-tree.jpg?v=51`,
+  guideSnow: `${BASE}pixel/guide-snow.jpg?v=62`,
+  guideGift: `${BASE}pixel/guide-gift.jpg?v=62`,
+  guideBell: `${BASE}pixel/guide-bell.jpg?v=62`,
+  guideAntlers: `${BASE}pixel/guide-antlers.jpg?v=62`,
+  guideHat: `${BASE}pixel/guide-hat.jpg?v=62`,
+  guideNext: `${BASE}pixel/guide-next.jpg?v=62`,
+  guideTree: `${BASE}pixel/guide-tree.jpg?v=62`,
   santaHat: `${BASE}pixel/santa-hat.png?v=3`,
   antlers: `${BASE}pixel/antlers.png?v=2`,
   gift: `${BASE}pixel/gift.png?v=52`,
